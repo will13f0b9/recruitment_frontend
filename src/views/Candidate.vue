@@ -35,7 +35,7 @@
                       </span>
                     </v-col>
 
-                    <v-col cols="6" sm="6" md="4">
+                    <v-col cols="6" sm="6" md="2">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
                         <v-list-item-subtitle class="font-weight-black">Inscrição</v-list-item-subtitle>
                         <span
