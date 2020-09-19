@@ -1,16 +1,17 @@
 <template>
   <v-app>
     <v-main>
-      <router-view></router-view>
+      <Logged />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import Logged from "@/views/Logged.vue";
 export default {
   name: "App",
 
-  components: {},
+  components: { Logged: Logged },
 
   data: () => ({}),
 };

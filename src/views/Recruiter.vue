@@ -8,7 +8,7 @@
             <v-list-item v-for="job in dashInfo.jobs" :key="job" three-line>
               <v-list-item-content style="padding: 0;">
                 <v-divider />
-                <v-container :style="`background-color: ${!job.exam || !job.exam.doneAt ? 'rgb(255 242 242);' : ''} `">
+                <v-container :style="`background-color: ${!job.exam || !job.exam.doneAt ? '#ffe7e7' : ''} `">
                   <v-row no-gutters>
                     <v-col cols="12" sm="12" md="6">
                       <div class="mb-0 font-weight-medium" style="color: #025891;">{{job.title}}</div>
@@ -89,7 +89,8 @@ export default {
   components: {
     Menu: Menu,
   },
-  data: () => ({}),
+  data: () => ({
+  }),
 };
 </script>
 <style scoped>

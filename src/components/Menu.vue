@@ -6,8 +6,8 @@
       color="amber"
       style="background: linear-gradient(to right,#16a0bf,#025891);"
     >
-      <span class="title ml-1 mr-5">
-        <v-avatar width="40">
+      <span style="cursor: pointer" class="title ml-1 mr-5" @click="$router.push('/')">
+        <v-avatar width="30">
           <img class="avatar" src="@/assets/logo.png" alt="Icon Vaga Certa" />
         </v-avatar>
         Vaga&nbsp;
@@ -15,18 +15,17 @@
       </span>
       <v-app-bar-nav-icon @click="drawer = !drawer" :color="'white'"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
-      <v-text-field solo-inverted flat hide-details label="Search" prepend-inner-icon="search"></v-text-field>
-
+      <!-- <v-text-field solo-inverted flat hide-details label="Search" prepend-inner-icon="search"></v-text-field> -->
       <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
       <div class="avatarPanel">
         <v-avatar height="70" width="70">
-          <img class="avatar" src="@/assets/avatar-demo.a70aed79.png" alt="John" />
+          <img class="avatar" :src="getImgAvatar(userData.avatar)" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500;">{{name}}</h4>
-        <h5 style="color: grey">{{description}}</h5>
+        <h4 style="font-weight: 500;">{{userData.name}}</h4>
+        <h5 style="color: grey">{{userData.description}}</h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">
@@ -52,7 +51,7 @@
     </v-navigation-drawer>
     <div class="breadCrumb">
       <span>
-        HOME
+        {{this.$router.currentRoute.name}}
       </span>
     </div>
   </div>
@@ -62,19 +61,24 @@
 export default {
   props: {
     source: String,
-    name: String,
-    description: String
+    userData: Object
   },
   data: () => ({
     drawer: null,
+    avatar: "@/assets/avatar-recruiter-demo.330ee974.png",
     items: [
       { icon: "home", text: "Home",  path: "#"},
       { icon: "apartment", text: "Empresas", disable: true,  path: "#"},
-      { icon: "school", text: "Jobs", path: "#" },
+      { icon: "school", text: "Vagas", path: "/jobs" },
       { icon: "logout", text: "Sair", path: "/"},
       
     ],
   }),
+  methods: {
+    getImgAvatar(uri){
+      return require('@/assets/' + uri)
+    }
+  },
 };
 </script>
 
