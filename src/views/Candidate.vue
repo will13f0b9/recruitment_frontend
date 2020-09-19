@@ -2,16 +2,27 @@
   <v-app class="about">
     <v-container>
       <v-row no-gutters>
-        <v-col cols="12" sm="6" md="8">
+        <v-col cols="12" sm="12" md="12">
           <v-card elevation="4" class="mx-auto mx-auto mt-2" outlined>
-            <div class="ml-4 mt-2 mb-2 font-weight-italic h1">Candidatura Recentes</div>
+            <v-row justify="space-around">
+              <v-col>
+                <div class="ml-4 mt-2 mb-2 font-weight-bold h1">Candidatura Recentes</div>
+              </v-col>
+              <v-col class="text-center h1">
+                <div class="ml-4 mt-2 mb-2 font-weight-bold h1">Vagas candidatadas:</div>
+                <h2>{{dashInfo.totalJobsSubscribe}}</h2>
+              </v-col>
+            </v-row>
+
             <v-list-item v-for="job in dashInfo.jobs" :key="job" three-line>
               <v-list-item-content style="padding: 0;">
                 <v-divider />
-                <v-container :style="`background-color: ${!job.exam || !job.exam.doneAt ? 'rgb(255 242 242);' : ''} `">
+                <v-container
+                  :style="`background-color: ${!job.exam || !job.exam.doneAt ? 'rgb(255 242 242);' : ''} `"
+                >
                   <v-row no-gutters>
                     <v-col cols="12" sm="12" md="6">
-                      <div class="mb-0 font-weight-medium" style="color: #025891;">{{job.title}}</div>
+                      <div class="mb-0 font-weight-black" style="color: #025891;">{{job.title}}</div>
                       <span v-for="skill in job.requiredSkills" :key="skill">
                         <v-chip
                           style="height: 15px; font-size: 10px"
@@ -23,56 +34,53 @@
                         >{{skill}}</v-chip>
                       </span>
                     </v-col>
-                    
-                    <v-col cols="6" sm="12" md="2">
+
+                    <v-col cols="6" sm="6" md="4">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
-                        <v-list-item-subtitle>Inscrição</v-list-item-subtitle>
-                        <span v-if="job.exam && job.exam.startedAt" class="caption">{{new Date(job.exam.startedAt).toLocaleDateString()}}</span>
-                        <span v-else class="caption"> - </span>
+                        <v-list-item-subtitle class="font-weight-black">Inscrição</v-list-item-subtitle>
+                        <span
+                          v-if="job.exam && job.exam.startedAt"
+                          class="caption"
+                        >{{new Date(job.exam.startedAt).toLocaleDateString()}}</span>
+                        <span v-else class="caption">-</span>
                       </div>
                     </v-col>
-                    <v-col cols="6" sm="12" md="2">
+                    <v-col cols="6" sm="6" md="2">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
                         <v-list-item-subtitle class="font-weight-black">Conclusão</v-list-item-subtitle>
-                        <span v-if="job.exam && job.exam.doneAt" class="caption">{{new Date(job.exam.doneAt).toLocaleDateString()}}</span>
-                        <span v-else class="caption"> - </span>
+                        <span
+                          v-if="job.exam && job.exam.doneAt"
+                          class="caption"
+                        >{{new Date(job.exam.doneAt).toLocaleDateString()}}</span>
+                        <span v-else class="caption">-</span>
                       </div>
                     </v-col>
-                    <v-col cols="12" sm="12" md="2">
+                    <v-col cols="6" sm="12" md="2">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
                         <v-list-item-subtitle class="font-weight-black">Acertos</v-list-item-subtitle>
-                        <span class="mt-2">
-                          {{job.exam ? job.exam.hitPercent : ""}}
-                        </span>
-                        
+                        <span class="mt-2">{{job.exam ? job.exam.hitPercent : ""}}</span>
                       </div>
                     </v-col>
                   </v-row>
                   <v-card-actions class="mt-5 mb-0 pb-0">
-                    <v-btn text x-small color="cyan darken-4">Visualizar</v-btn>
+                    <v-btn
+                      text
+                      small
+                      color="cyan darken-4"
+                      @click="$router.push('/jobs/'+job._id)"
+                    >Visualizar</v-btn>
                     <v-btn
                       color="green"
                       solid
-                      x-small
+                      small
+                      @click="$router.push('/jobs/'+job._id+'?candidate=true')"
                       v-if="!job.exam || !job.exam.doneAt"
+                      class="white--text"
                     >Concluir</v-btn>
                   </v-card-actions>
                 </v-container>
               </v-list-item-content>
             </v-list-item>
-          </v-card>
-        </v-col>
-        <v-col cols="12" md="4" xs="12">
-          <v-card elevation="4" class="mx-auto mt-2" max-width="344" outlined>
-            <v-list-item three-line>
-              <v-list-item-content>
-                <div class="ml-4 mt-2 mb-2 font-weight-italic h1">Vagas Candidatadas</div>
-                <v-list-item-title class="mb-1 mt-4 text-h2 text-center">{{dashInfo.totalJobsSubscribe}}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-card-actions>
-              <v-btn outlined color="yellow darken-4" text>Visualizar Suas incrições</v-btn>
-            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -84,7 +92,7 @@ import Menu from "@/components/Menu.vue";
 export default {
   props: {
     userData: Object,
-    dashInfo: Object
+    dashInfo: Object,
   },
   components: {
     Menu: Menu,

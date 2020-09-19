@@ -9,8 +9,7 @@
       <span style="cursor: pointer" class="title ml-1 mr-5" @click="$router.push('/')">
         <v-avatar width="30">
           <img class="avatar" src="@/assets/logo.png" alt="Icon Vaga Certa" />
-        </v-avatar>
-        Vaga&nbsp;
+        </v-avatar>Vaga&nbsp;
         <span class="font-weight-light">Certa</span>
       </span>
       <v-app-bar-nav-icon @click="drawer = !drawer" :color="'white'"></v-app-bar-nav-icon>
@@ -43,16 +42,17 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title @click="$router.push(item.path)" class="grey--text">{{ item.text }}</v-list-item-title>
+              <v-list-item-title
+                @click="item._id == 'home' ? $router.push(item.path + profile) : $router.push(item.path)"
+                class="grey--text"
+              >{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </template>
       </v-list>
     </v-navigation-drawer>
     <div class="breadCrumb">
-      <span>
-        {{this.$router.currentRoute.name}}
-      </span>
+      <span style="font-size: 1.4em" class="font-weight-bold">{{this.$router.currentRoute.name}}</span>
     </div>
   </div>
 </template>
@@ -61,23 +61,33 @@
 export default {
   props: {
     source: String,
-    userData: Object
+    userData: Object,
+    profile: String,
   },
   data: () => ({
     drawer: null,
     avatar: "@/assets/avatar-recruiter-demo.330ee974.png",
     items: [
-      { icon: "home", text: "Home",  path: "#"},
-      { icon: "apartment", text: "Empresas", disable: true,  path: "#"},
-      { icon: "school", text: "Vagas", path: "/jobs" },
-      { icon: "logout", text: "Sair", path: "/"},
-      
+      { _id: "home", icon: "home", text: "Home", path: "/" },
+      {
+        _id: "companies",
+        icon: "apartment",
+        text: "Empresas",
+        disable: true,
+        path: "#",
+      },
+      { _id: "jobs", icon: "school", text: "Vagas", path: "/jobs" },
+      { _id: "out", icon: "logout", text: "Sair", path: "/" },
     ],
   }),
   methods: {
-    getImgAvatar(uri){
-      return require('@/assets/' + uri)
-    }
+    getImgAvatar(uri) {
+      if (uri) {
+        return require("@/assets/" + uri);
+      } else {
+        return require("@/assets/avatar-recruiter-demo.330ee974.png");
+      }
+    },
   },
 };
 </script>
@@ -109,31 +119,31 @@ export default {
   background-size: cover;
   border-radius: 50%;
 }
-.breadCrumb{
-    position: relative;
-    height: 150px;
-    width: 100%;
-    background: linear-gradient(to right,#16a0bf,#025891);
-    z-index: 0;
-    padding-top: 20px;
-    padding-left: 40px;
-    font-size: 1.5em;
-    color: white;
-    z-index: 0;
+.breadCrumb {
+  position: relative;
+  height: 150px;
+  width: 100%;
+  background: linear-gradient(to right, #16a0bf, #025891);
+  z-index: 0;
+  padding-top: 20px;
+  padding-left: 40px;
+  font-size: 1.5em;
+  color: white;
+  z-index: 0;
 }
-.breadCrumb span{
+.breadCrumb span {
   position: relative;
 }
-.breadCrumb span::after{
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 30%;
-    height: 2px;
-    width: 70%;
-    background: wheat;
-    z-index: 0;
-    font-size: 1.5em;
-    color: white;
+.breadCrumb span::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+  height: 2px;
+  width: 70%;
+  background: wheat;
+  z-index: 0;
+  font-size: 1.5em;
+  color: white;
 }
 </style>

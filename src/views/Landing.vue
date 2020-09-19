@@ -1,10 +1,10 @@
 <template>
   <div v-ripple class="main text-center elevation-2 pa-12 headline">
-    <img style="width: 80%" alt="Vue logo" src="../assets/vaga-certa-logo.b1818157.png" />
+    <img style="width: 80%; heigth: 100vh;" alt="Vue logo" src="../assets/vaga-certa-logo.b1818157.png" />
     <v-content>
       <v-row>
-        <v-col v-for="route in routes" :key="route">
-          <v-btn @click="$router.push(route.path)" class="ma-2" outlined color="teal" dark>{{route.name}}</v-btn>
+        <v-col cols="12" v-for="route in routes" :key="route">
+          <v-btn block v-if="!route.hidden" @click="$router.push(route.path)" class="ma-2" outlined color="teal" dark>{{route.name}}</v-btn>
         </v-col>
       </v-row>
     </v-content>

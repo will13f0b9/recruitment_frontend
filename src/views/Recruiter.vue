@@ -6,7 +6,7 @@
           <v-card elevation="4" class="mx-auto mx-auto mt-2" outlined>
             <div class="ml-4 mt-2 mb-2 font-weight-italic h1">Candidatura Recentes</div>
             <v-list-item v-for="job in dashInfo.jobs" :key="job" three-line>
-              <v-list-item-content style="padding: 0;">
+              <!-- <v-list-item-content style="padding: 0;">
                 <v-divider />
                 <v-container :style="`background-color: ${!job.exam || !job.exam.doneAt ? '#ffe7e7' : ''} `">
                   <v-row no-gutters>
@@ -58,7 +58,7 @@
                     >Concluir</v-btn>
                   </v-card-actions>
                 </v-container>
-              </v-list-item-content>
+              </v-list-item-content> -->
             </v-list-item>
           </v-card>
         </v-col>

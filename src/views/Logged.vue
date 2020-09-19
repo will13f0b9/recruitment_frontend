@@ -1,6 +1,10 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
-    <Menu :userData="userData" :dashInfo="dashInfo"></Menu>
+    <Menu
+      :userData="userData"
+      :dashInfo="dashInfo"
+      :profile="userData.profiles ? userData.profiles.indexOf('CANDIDATE') != -1 ? 'candidate' : 'recruiter' :'#'"
+    >></Menu>
     <router-view :userData="userData" v-bind:dashInfo="dashInfo"></router-view>
   </v-app>
   <v-app v-else class="about">
@@ -22,7 +26,15 @@ export default {
     dashInfo: {},
     candidate: {
       userData: {
+        userId: "5f53ca26d97fc623870f0be9",
         name: "André Golnçalvez",
+        email: "farmacia@farmcia.com.br",
+        profiles: ["CANDIDATE"],
+        cpf: "00019100000",
+        gender: "Female",
+        dateOfBirth: "1997-01-01T02:00:00.000Z",
+        accessToken:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYXJtYWNpYUBmYXJtY2lhLmNvbS5iciIsImlzcyI6Im1lYXQtYXBpIiwiaWF0IjoxNjAwNTMwMDA2fQ.rSkmtsd4OJWyoFebFX4p2IR5n1D9_31Wt0g3Ag6C2wY",
         description: "Desenvolvedor React Native",
         avatar: "avatar-demo.a70aed79.png",
       },
@@ -51,6 +63,7 @@ export default {
     },
     recruiter: {
       userData: {
+        userId: "5f53ca26d97fc623870f0be9",
         avatar: "avatar-recruiter-demo.330ee974.png",
         name: "Juliana Medeiros",
         description: "Analista de R&S Sênior",

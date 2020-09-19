@@ -15,4 +15,11 @@ export class Jobs extends BaseApi {
             params: params
         })
     }
+
+    async getById(id) {
+        return this.client.request({
+            type: 'get',
+            url: `${this.jobUri}/${id}`
+        })
+    }
 }
