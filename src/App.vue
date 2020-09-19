@@ -1,32 +1,74 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+  </v-app>
 </template>
 
+<script>
+export default {
+  name: "App",
+
+  components: {},
+
+  data: () => ({}),
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+}
+/* .v-main__wrap::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  bottom: 0;
+  right: 0;
+  background: url("./assets/main_background.png");
+} */
+
+body,
+input,
+button {
+  /*font-family: 'Roboto Slab', serif;*/
+  font-size: 16px;
 }
 
-#nav {
-  padding: 30px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+  font-weight: 500;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+button {
+  cursor: pointer;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+*::-webkit-scrollbar {
+  background-color: #fff;
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+  border: 3px solid #fff;
+}
+
+*-webkit-scrollbar-button {
+  display: none;
 }
 </style>
