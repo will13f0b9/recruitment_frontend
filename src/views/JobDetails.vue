@@ -73,7 +73,7 @@
           <v-row justify="start">
             <v-col cols="12" sm="12">
               <div class="ml-2 grey--text font-weight-bold">Informações complementares:</div>
-              <div class="ml-2  text-justify pr-2">{{job.anotherInfo ? job.anotherInfo : '-'}}</div>
+              <div class="ml-2 text-justify pr-2">{{job.anotherInfo ? job.anotherInfo : '-'}}</div>
             </v-col>
           </v-row>
           <v-row justify="start" class="ml-2">
@@ -141,6 +141,12 @@
                 >{{benefits}}</v-chip>
               </article>
               <span v-else>-</span>
+            </v-col>
+          </v-row>
+          <v-row justify="start">
+            <v-col cols="12" sm="12">
+              <div class="grey--text text-center font-weight-bold" style="font-size: 1.4em"><v-icon small class="mr-2">mdi_domain</v-icon>{{job.company.name}}</div>
+              <div class="ml-5 text-justify pr-2">{{job.company.description}}</div>
             </v-col>
           </v-row>
         </article>
