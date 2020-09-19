@@ -77,6 +77,7 @@ export default {
         path: "#",
       },
       { _id: "jobs", icon: "school", text: "Vagas", path: "/jobs" },
+      { _id: "profile", icon: "person", text: "Perfil", path: "/profile" },
       { _id: "out", icon: "logout", text: "Sair", path: "/" },
     ],
   }),

@@ -21,7 +21,7 @@
             <v-divider :key="item._id" />
             <v-list-item :key="item.title" :class="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1 ? 'green lighten-5' : ''">
               <template v-slot:default="{}">
-                <v-list-item-content>
+                <v-list-item-content @click="$router.push('/jobs/'+item._id)">
                   <v-row no-gutters justify="space-between">
                     <v-col md="4">
                       <v-list-item-title
