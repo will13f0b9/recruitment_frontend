@@ -25,6 +25,9 @@
       elevation="1"
       :icon="alert.icon"
       class="mb-0 white--text"
+      style="    position: fixed;
+    z-index: 99;
+    width: 100%;"
     >
       <strong>{{alert.message}}</strong>
     </v-alert>
