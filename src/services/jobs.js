@@ -1,4 +1,4 @@
-
+import * as axios from 'axios';
 import { BaseApi } from "./base"
 
 
@@ -9,7 +9,7 @@ export class Jobs extends BaseApi {
     }
 
     async getAll(params = {}) {
-        return this.client.request({
+        return axios.request({
             type: 'get',
             url: this.jobUri,
             params: params
@@ -17,7 +17,7 @@ export class Jobs extends BaseApi {
     }
 
     async getById(id) {
-        return this.client.request({
+        return axios.request({
             type: 'get',
             url: `${this.jobUri}/${id}`
         })

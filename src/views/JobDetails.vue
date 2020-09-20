@@ -158,7 +158,7 @@
           block
           class="mt-5"
           color="success"
-          :disabled="job.cadidateUsers && job.cadidateUsers.indexOf(userData.userId) != -1"
+          :disabled="job.cadidateUsers && job.cadidateUsers.indexOf(userData.userId) != -1 || !userData.curriculum"
           @click="dialog= !dialog"
         >{{job.cadidateUsers && job.cadidateUsers.indexOf(userData.userId) != -1 ? 'Você já está candidatado a vaga': 'Candidatar-se!'}}</v-btn>
       </article>

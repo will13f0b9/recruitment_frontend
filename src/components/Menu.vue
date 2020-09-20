@@ -21,7 +21,7 @@
     <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
       <div class="avatarPanel">
         <v-avatar height="70" width="70">
-          <img class="avatar" :src="getImgAvatar(userData.avatar)" alt="John" />
+          <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
         <h4 style="font-weight: 500;">{{userData.name}}</h4>
         <h5 style="color: grey">{{userData.description}}</h5>
@@ -37,7 +37,7 @@
             </v-col>
           </v-row>
           <v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
-          <v-list-item v-else-if="!item.disable" :key="i" link>
+          <v-list-item style="cursor: pointer;!important" v-else-if="!item.disable" :key="i" link>
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
@@ -54,6 +54,7 @@
     <div class="breadCrumb">
       <span style="font-size: 1.4em" class="font-weight-bold">{{this.$router.currentRoute.name}}</span>
     </div>
+   
   </div>
 </template>
 
@@ -66,7 +67,6 @@ export default {
   },
   data: () => ({
     drawer: null,
-    avatar: "@/assets/avatar-recruiter-demo.330ee974.png",
     items: [
       { _id: "home", icon: "home", text: "Home", path: "/" },
       {
@@ -82,11 +82,11 @@ export default {
     ],
   }),
   methods: {
-    getImgAvatar(uri) {
-      if (uri) {
-        return require("@/assets/" + uri);
-      } else {
+    getImgAvatar() {
+      if (this.userData && this.userData.gender && this.userData.gender.toLowerCase().indexOf("female") != -1) {
         return require("@/assets/avatar-recruiter-demo.330ee974.png");
+      } else {
+        return require("@/assets/avatar-demo.a70aed79.png");
       }
     },
   },

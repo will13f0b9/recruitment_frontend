@@ -85,7 +85,7 @@
                       >Visualizar</v-btn>
                       <v-btn
                         class="ma-2 white--text"
-                        :disabled="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1"
+                        :disabled="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1 || !userData.curriculum"
                         x-small
                         solid
                         color="teal"

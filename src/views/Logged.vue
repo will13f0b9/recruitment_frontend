@@ -1,11 +1,39 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
+    <v-alert
+      v-if="userData && !userData.curriculum"
+      color="yellow"
+      border="left"
+      elevation="2"
+      colored-border
+      icon="mdi-alert"
+      class="mb-0"
+    >
+      Faça
+      <strong>upload</strong> do seu
+      <strong>currículo</strong> para se candidatar as vagas!
+      <strong
+        class="cyan--text"
+        @click="$router.push('/profile')"
+        style="text-decoration: underline;cursor:pointer"
+      >Clique aqui!</strong>
+    </v-alert>
+    <v-alert
+      v-if="alert.show"
+      :color="alert.collor"
+      border="left"
+      elevation="1"
+      :icon="alert.icon"
+      class="mb-0 white--text"
+    >
+      <strong>{{alert.message}}</strong>
+    </v-alert>
     <Menu
       :userData="userData"
       :dashInfo="dashInfo"
-      :profile="userData.profiles ? userData.profiles.indexOf('CANDIDATE') != -1 ? 'candidate' : 'recruiter' :'#'"
+      :profile="userData && userData.profiles ? userData.profiles.indexOf('CANDIDATE') != -1 ? 'candidate' : 'recruiter' :'#'"
     >></Menu>
-    <router-view :userData="userData" v-bind:dashInfo="dashInfo"></router-view>
+    <router-view :alert="alert" :userData="userData" v-bind:dashInfo="dashInfo"></router-view>
   </v-app>
   <v-app v-else class="about">
     <router-view></router-view>
@@ -15,6 +43,7 @@
 <script>
 import Menu from "@/components/Menu.vue";
 import { routes } from "@/router/index.js";
+import { Users } from "@/services/users.js";
 
 export default {
   name: "App",
@@ -22,6 +51,12 @@ export default {
   components: { Menu: Menu },
 
   data: () => ({
+    alert: {
+      show: false,
+      collor: "",
+      icon: "",
+      message: "",
+    },
     userData: {},
     dashInfo: {},
     candidate: {
@@ -36,7 +71,6 @@ export default {
         accessToken:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYXJtYWNpYUBmYXJtY2lhLmNvbS5iciIsImlzcyI6Im1lYXQtYXBpIiwiaWF0IjoxNjAwNTMwMDA2fQ.rSkmtsd4OJWyoFebFX4p2IR5n1D9_31Wt0g3Ag6C2wY",
         description: "Desenvolvedor React Native",
-        avatar: "avatar-demo.a70aed79.png",
       },
       dashInfo: {
         totalJobsSubscribe: 2,
@@ -64,7 +98,6 @@ export default {
     recruiter: {
       userData: {
         userId: "5f53ca26d97fc623870f0be9",
-        avatar: "avatar-recruiter-demo.330ee974.png",
         name: "Juliana Medeiros",
         description: "Analista de R&S Sênior",
       },
@@ -105,10 +138,33 @@ export default {
       return loggedArea;
     },
   },
-  mounted() {
+  async mounted() {
     console.log("CREATED");
-    this.userData = this.candidate.userData;
-    this.dashInfo = this.candidate.dashInfo;
+    const user = new Users();
+    await user
+      .authenticate({
+        email: "farmacia@farmcia.com.br",
+        password: "2020",
+      })
+      .then((success) => {
+        this.userData = success.data.userInfo;
+        this.dashInfo = success.data.dashInfo;
+      })
+      .catch((err) => {
+        console.error(err);
+        this.userData = this.candidate.userData;
+        this.dashInfo = this.candidate.dashInfo;
+      });
+    // authenticate
+  },
+  watch: {
+    "alert.show": function (after, before) {
+      if (after) {
+        setTimeout(() => {
+          this.alert.show = false;
+        }, 5000);
+      }
+    },
   },
 };
 </script>

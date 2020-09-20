@@ -4,6 +4,7 @@ import Landing from '../views/Landing.vue'
 import Candidate from '@/views/Candidate.vue'
 import Recruiter from '@/views/Recruiter.vue'
 import Jobs from '@/views/Jobs.vue'
+import Profile from '@/views/Profile.vue'
 import JobDetails from '@/views/JobDetails.vue'
 
 Vue.use(VueRouter)
@@ -41,7 +42,14 @@ export const routes = [
     component: JobDetails,
     logged: true,
     hidden: true
-  }
+  },
+  {
+    path: '/profile',
+    name: 'Perfil',
+    component: Profile,
+    logged: true,
+    hidden: true
+  },
 ]
 
 const router = new VueRouter({
