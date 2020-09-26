@@ -82,6 +82,7 @@ export default {
     userData: Object,
     dashInfo: Object,
     alert: Object,
+    mainControll: Object
   },
   components: {
     Menu: Menu,
@@ -133,6 +134,7 @@ export default {
             debugger;
           });
       }
+      this.mainControll.globalLoading = true;
       delete this.user.curriculum;
       await userApi
         .editUSer(this.userData.userId, this.user)
@@ -150,8 +152,10 @@ export default {
           this.userData.description = success.data.description;
           this.userData.curriculum = success.data.curriculum ? true : false;
           this.user = Object.assign({}, this.userData);
+          this.mainControll.globalLoading = false;
         })
         .catch((err) => {
+          this.mainControll.globalLoading = false;
           this.alert.show = true;
           this.alert.collor = "red darken-4";
           this.alert.icon = "alert-circle";

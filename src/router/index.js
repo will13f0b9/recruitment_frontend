@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Landing from '../views/Landing.vue'
-import Candidate from '@/views/Candidate.vue'
+import Landing from '@/views/Recruiter.vue'
+import Candidate from '@/views/Recruiter.vue'
 import Recruiter from '@/views/Recruiter.vue'
 import Jobs from '@/views/Jobs.vue'
 import Profile from '@/views/Profile.vue'
@@ -13,40 +13,46 @@ export const routes = [
   {
     path: '/',
     name: 'Landing',
-    component: Landing,
+    component: () => import('@/views/Landing.vue'),
+    // component: Landing,
     logged: false
   },
   {
     path: '/candidate',
     name: 'Home Candidato',
-    component: Candidate,
+    component: () => import('@/views/Candidate.vue'),
+    // component: Candidate,
     logged: true
   },
   {
     path: '/recruiter',
     name: 'Home Recrutador',
-    component: Recruiter,
+    component: () => import('@/views/Recruiter.vue'),
+    // component: Recruiter,
     logged: true,
     hidden: true
   },
   {
     path: '/jobs',
     name: 'Vagas',
-    component: Jobs,
+    component: () => import('@/views/Jobs.vue'),
+    // component: Jobs,
     logged: true,
     hidden: true
   },
   {
     path: '/jobs/:id',
     name: 'Detalhes da Vaga',
-    component: JobDetails,
+    component: () => import('@/views/JobDetails.vue'),
+    // component: JobDetails,
     logged: true,
     hidden: true
   },
   {
     path: '/profile',
     name: 'Perfil',
-    component: Profile,
+    component: () => import('@/views/Profile.vue'),
+    // component: Profile,
     logged: true,
     hidden: true
   },

@@ -1,19 +1,38 @@
 <template>
   <v-app>
+    <Login :mainControll="mainControll"></Login>
+    <v-col v-if="mainControll.globalLoading" class="global-loading" cols="12">
+      <v-row align="center" justify="center" style="height: 80vh">
+        <div>
+          <h1>Carregando...</h1>
+          <br />
+          <v-icon class="rotate-90-cw" color="black">mdi-loading</v-icon>
+        </div>
+      </v-row>
+    </v-col>
+
     <v-main>
-      <Logged />
+      <Logged :mainControll="mainControll" />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import Login from "@/components/Login.vue";
 import Logged from "@/views/Logged.vue";
 export default {
   name: "App",
 
-  components: { Logged: Logged },
-
-  data: () => ({}),
+  components: { Logged: Logged, Login: Login },
+  data: () => ({
+    mainControll: {
+      showLoginDialog: false,
+      registerTab: false,
+      globalLoading: false,
+      dashInfo: {},
+      userData: {},
+    },
+  }),
 };
 </script>
 <style>

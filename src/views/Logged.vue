@@ -1,7 +1,7 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
-      v-if="userData && !userData.curriculum"
+      v-if="mainControll.userData && !mainControll.userData.curriculum"
       color="yellow"
       border="left"
       elevation="2"
@@ -10,13 +10,14 @@
       class="mb-0"
     >
       Faça
-      <strong>upload</strong> do seu
-      <strong>currículo</strong> para se candidatar as vagas!
+      <strong>upload</strong> do seu <strong>currículo</strong> para se
+      candidatar as vagas!
       <strong
         class="cyan--text"
         @click="$router.push('/profile')"
-        style="text-decoration: underline;cursor:pointer"
-      >Clique aqui!</strong>
+        style="text-decoration: underline; cursor: pointer"
+        >Clique aqui!</strong
+      >
     </v-alert>
     <v-alert
       v-if="alert.show"
@@ -25,21 +26,31 @@
       elevation="1"
       :icon="alert.icon"
       class="mb-0 white--text"
-      style="    position: fixed;
-    z-index: 99;
-    width: 100%;"
+      style="position: fixed; z-index: 99; width: 100%"
     >
-      <strong>{{alert.message}}</strong>
+      <strong>{{ alert.message }}</strong>
     </v-alert>
     <Menu
-      :userData="userData"
-      :dashInfo="dashInfo"
-      :profile="userData && userData.profiles ? userData.profiles.indexOf('CANDIDATE') != -1 ? 'candidate' : 'recruiter' :'#'"
-    >></Menu>
-    <router-view :alert="alert" :userData="userData" v-bind:dashInfo="dashInfo"></router-view>
+      :userData="mainControll.userData"
+      :dashInfo="mainControll.dashInfo"
+      :profile="
+        mainControll.userData && mainControll.userData.profiles
+          ? mainControll.userData.profiles.indexOf('CANDIDATE') != -1
+            ? 'candidate'
+            : 'recruiter'
+          : '#'
+      "
+      >></Menu
+    >
+    <router-view
+      :alert="alert"
+      :userData="mainControll.userData"
+      :dashInfo="mainControll.dashInfo"
+      :mainControll="mainControll"
+    ></router-view>
   </v-app>
   <v-app v-else class="about">
-    <router-view></router-view>
+    <router-view :mainControll="mainControll"></router-view>
   </v-app>
 </template>
 
@@ -50,7 +61,9 @@ import { Users } from "@/services/users.js";
 
 export default {
   name: "App",
-
+  props: {
+    mainControll: Object,
+  },
   components: { Menu: Menu },
 
   data: () => ({
@@ -143,22 +156,31 @@ export default {
   },
   async mounted() {
     console.log("CREATED");
-    const user = new Users();
-    await user
-      .authenticate({
-        email: "farmacia@farmcia.com.br",
-        password: "2020",
-      })
-      .then((success) => {
-        this.userData = success.data.userInfo;
-        this.dashInfo = success.data.dashInfo;
-      })
-      .catch((err) => {
-        console.error(err);
-        this.userData = this.candidate.userData;
-        this.dashInfo = this.candidate.dashInfo;
-      });
-    // authenticate
+    if (
+      !this.mainControll ||
+      !this.mainControll.userData ||
+      !this.mainControll.userData.hasOwnProperty("userId")
+    ) {
+        if(!this.$router.currentRoute || this.$router.currentRoute.path.indexOf("/") != -1){
+        this.$router.push("/");
+      }
+      this.mainControll.showLoginDialog = true;
+      this.mainControll.registerTab = false;
+    }
+  },
+   async updated() {
+    console.log("UPDATED");
+    if (
+      !this.mainControll ||
+      !this.mainControll.userData ||
+      !this.mainControll.userData.hasOwnProperty("userId")
+    ) {
+      if(!this.$router.currentRoute || this.$router.currentRoute.path.indexOf("/") != -1){
+        this.$router.push("/");
+      }
+      this.mainControll.showLoginDialog = true;
+      this.mainControll.registerTab = false;
+    }
   },
   watch: {
     "alert.show": function (after, before) {
@@ -226,5 +248,44 @@ button {
 
 *-webkit-scrollbar-button {
   display: none;
+}
+
+.global-loading {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #e5fffbd9;
+  width: 100%;
+  height: 100vh;
+  z-index: 999;
+}
+.global-loading i {
+  font-size: 6em !important;
+}
+.rotate-90-cw {
+  -webkit-animation: rotate-90-cw 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    infinite;
+  animation: rotate-90-cw 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@-webkit-keyframes rotate-90-cw {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate-90-cw {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 </style>

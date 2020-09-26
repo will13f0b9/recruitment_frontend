@@ -6,7 +6,7 @@
           <v-card elevation="4" class="mx-auto mx-auto mt-2" outlined>
             <v-row justify="space-around">
               <v-col>
-                <div class="ml-4 mt-2 mb-2 font-weight-bold h1">Candidatura Recentes</div>
+                <div class="ml-4 mt-2 mb-2 font-weight-bold h1">Candidaturas Recentes</div>
               </v-col>
               <v-col class="text-center h1">
                 <div class="ml-4 mt-2 mb-2 font-weight-bold h1">Vagas candidatadas:</div>
@@ -14,12 +14,10 @@
               </v-col>
             </v-row>
 
-            <v-list-item v-for="job in dashInfo.jobs" :key="job" three-line>
+            <v-list-item v-for="job in dashInfo.jobs" :key="job.id" three-line>
               <v-list-item-content style="padding: 0;">
                 <v-divider />
-                <v-container
-                  :style="`background-color: ${!job.exam || !job.exam.doneAt ? 'rgb(255 242 242);' : ''} `"
-                >
+                <v-container>
                   <v-row no-gutters>
                     <v-col cols="12" sm="12" md="6">
                       <div class="mb-0 font-weight-black" style="color: #025891;">{{job.title}}</div>

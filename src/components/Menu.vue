@@ -4,15 +4,26 @@
       app
       clipped-left
       color="amber"
-      style="background: linear-gradient(to right,#16a0bf,#025891);"
+      style="background: linear-gradient(to right, #16a0bf, #025891)"
     >
-      <span style="cursor: pointer" class="title ml-1 mr-5" @click="$router.push('/')">
+      <span
+        style="cursor: pointer"
+        class="title ml-1 mr-5"
+        @click="$router.push('/')"
+      >
         <v-avatar width="30">
-          <img class="avatar" src="@/assets/logo.png" alt="Icon Vaga Certa" />
-        </v-avatar>Vaga&nbsp;
+          <img
+            class="avatar"
+            src="@/assets/logo.png"
+            alt="Icon Vaga Certa"
+          /> </v-avatar
+        >Vaga&nbsp;
         <span class="font-weight-light">Certa</span>
       </span>
-      <v-app-bar-nav-icon @click="drawer = !drawer" :color="'white'"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click="drawer = !drawer"
+        :color="'white'"
+      ></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <!-- <v-text-field solo-inverted flat hide-details label="Search" prepend-inner-icon="search"></v-text-field> -->
       <v-spacer></v-spacer>
@@ -23,8 +34,8 @@
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500;">{{userData.name}}</h4>
-        <h5 style="color: grey">{{userData.description}}</h5>
+        <h4 style="font-weight: 500">{{ userData.name }}</h4>
+        <h5 style="color: grey">{{ userData.description }}</h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">
@@ -36,25 +47,37 @@
               <v-btn small text>edit</v-btn>
             </v-col>
           </v-row>
-          <v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
-          <v-list-item style="cursor: pointer;!important" v-else-if="!item.disable" :key="i" link>
+          <v-divider
+            v-else-if="item.divider"
+            :key="i"
+            dark
+            class="my-4"
+          ></v-divider>
+          <v-list-item
+            style="cursor: pointer;!important"
+            v-else-if="!item.disable"
+            :key="i"
+            link
+          >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title
-                @click="item._id == 'home' ? $router.push(item.path + profile) : $router.push(item.path)"
+                @click="moveToRoute(item, profile)"
                 class="grey--text"
-              >{{ item.text }}</v-list-item-title>
+                >{{ item.text }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </template>
       </v-list>
     </v-navigation-drawer>
     <div class="breadCrumb">
-      <span style="font-size: 1.4em" class="font-weight-bold">{{this.$router.currentRoute.name}}</span>
+      <span style="font-size: 1.4em" class="font-weight-bold">{{
+        this.$router.currentRoute.name
+      }}</span>
     </div>
-   
   </div>
 </template>
 
@@ -83,10 +106,23 @@ export default {
   }),
   methods: {
     getImgAvatar() {
-      if (this.userData && this.userData.gender && this.userData.gender.toLowerCase().indexOf("female") != -1) {
+      if (
+        this.userData &&
+        this.userData.gender &&
+        this.userData.gender.toLowerCase().indexOf("female") != -1
+      ) {
         return require("@/assets/avatar-recruiter-demo.330ee974.png");
       } else {
         return require("@/assets/avatar-demo.a70aed79.png");
+      }
+    },
+    moveToRoute(item, profile) {
+      var path = item._id == "home" ? item.path + profile : item.path;
+      if (
+        this.$router.currentRoute && 
+        this.$router.currentRoute.path.indexOf(path) == -1
+      ) {
+        this.$router.push(path);
       }
     },
   },
