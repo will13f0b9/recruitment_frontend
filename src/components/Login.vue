@@ -8,7 +8,7 @@
           class="elevation-2"
           dark
           :centered="centered"
-          :vertical="true"
+          :vertical="false"
           :prev-icon="prevIcon ? 'mdi-arrow-left-bold-box-outline' : undefined"
           :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
           :icons-and-text="true"
