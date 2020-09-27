@@ -97,10 +97,10 @@
                 style="font-size: 1.4em"
               >
                 <v-icon class="mr-2">mdi_domain</v-icon>
-                {{ job.company.name }}
+                {{ job.company ? job.company.name : '-' }}
               </div>
               <div class="ml-2 text-justify pr-2">
-                {{ job.company.description }}
+                {{ job.company ? job.company.description : '-'}}
               </div>
             </v-col>
           </v-row>

@@ -12,7 +12,11 @@ export class Companies extends BaseApi {
         return axios.post(`${this.cUri}`, params)
     }
 
-    async getPlans(){
+    async edit(id, params) {
+        return axios.patch(`${this.cUri}/${id}`, params)
+    }
+
+    async getPlans() {
         return axios.get(`/plans`);
     }
 }
