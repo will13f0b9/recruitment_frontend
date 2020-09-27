@@ -82,8 +82,9 @@
                   </v-btn>
 
                   <v-btn
-                    color="success"
+                    color="teal"
                     solid
+                    dark
                     small
                     class="mt-4"
                     @click="logIn"
@@ -217,10 +218,11 @@
                   </v-btn>
 
                   <v-btn
-                    color="success"
+                    color="teal"
                     @click="createResource"
                     solid
                     small
+                    dark
                     class="mt-4"
                   >
                     Cadastrar
@@ -387,16 +389,14 @@ export default {
         .authenticate(data)
         .then((success) => {
           this.mainControll.globalLoading = false;
-
           if (!success.data.hasOwnProperty("companyId")) {
             this.mainControll.userData = success.data.userInfo;
             this.mainControll.dashInfo = success.data.dashInfo;
-            this.$router.push(
-              "/" + this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
-                -1
+            const path =
+              this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
                 ? "candidate"
-                : "recruiter"
-            );
+                : "recruiter";
+            this.$router.push("/" + path);
           } else {
             this.mainControll.company = success.data;
             this.$router.push("company");
@@ -451,17 +451,15 @@ export default {
             .authenticate(authData)
             .then((success) => {
               this.mainControll.globalLoading = false;
-
+              debugger;
               if (!success.data.hasOwnProperty("companyId")) {
                 this.mainControll.userData = success.data.userInfo;
                 this.mainControll.dashInfo = success.data.dashInfo;
-                this.$router.push(
-                  "/" +
-                    this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
-                    -1
+                const path =
+                  this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
                     ? "candidate"
-                    : "recruiter"
-                );
+                    : "recruiter";
+                this.$router.push("/" + path);
               } else {
                 this.mainControll.company = success.data;
                 this.$router.push("/company");

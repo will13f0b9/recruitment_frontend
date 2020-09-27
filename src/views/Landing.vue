@@ -1,6 +1,6 @@
 <template>
-  <div v-ripple class="main text-center elevation-2 pa-12 headline">
-    <img style="width: 80%; heigth: 100vh;" alt="Vue logo" src="../assets/vaga-certa-logo.b1818157.png" />
+  <div v-ripple class="main text-center elevation-2 pa-12 headline" style="background-color: #38c39d4a;">
+    <img style="width: 80%; heigth: 100vh;" alt="Vue logo" src="@/assets/VagaCertaFull.png" />
     <v-content>
       <v-row>
         <!-- <v-col cols="12" v-for="route in routes" :key="route">

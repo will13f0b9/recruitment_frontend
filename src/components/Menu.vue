@@ -6,26 +6,60 @@
       color="amber"
       style="background: linear-gradient(to right, #16a0bf, #025891)"
     >
-      <span
-        style="cursor: pointer"
-        class="title ml-1 mr-5"
-        @click="$router.push('/')"
-      >
-        <v-avatar width="30">
-          <img
-            class="avatar"
-            src="@/assets/logo.png"
-            alt="Icon Vaga Certa"
-          /> </v-avatar
-        >Vaga&nbsp;
-        <span class="font-weight-light">Certa</span>
-      </span>
-      <v-app-bar-nav-icon
-        @click="drawer = !drawer"
-        :color="'white'"
-      ></v-app-bar-nav-icon>
-      <v-spacer></v-spacer>
-      <!-- <v-text-field solo-inverted flat hide-details label="Search" prepend-inner-icon="search"></v-text-field> -->
+      <v-row class="mt-2">
+        <v-col cols="4" sm="4" md="4" class="mt-2">
+          <span
+            style="cursor: pointer"
+            class="title ml-1 mr-5"
+            @click="$router.push('/')"
+          >
+            <v-avatar>
+              <img
+                class="avatar"
+                src="@/assets/VagaCertaIconInvertido.png"
+                alt="Icon Vaga Certa"
+              />
+            </v-avatar>
+            <span v-if="drawer" class="mt-2 tracking-in-expand">
+              Vaga&nbsp;
+              <span class="font-weight-light">Certa</span>
+            </span>
+          </span>
+          <v-app-bar-nav-icon
+            @click="drawer = !drawer"
+            :color="'white'"
+          ></v-app-bar-nav-icon>
+        </v-col>
+        <v-col
+          offset-md="2"
+          v-if="userData && userData.hasOwnProperty('companies')"
+          cols="6"
+          sm="6"
+          md="6"
+        >
+          <v-select
+            class="mt-4 custom-v-select"
+            :items="userData.companies"
+            item-value="_id"
+            item-text="name"
+            no-data-text="Sem dados de empresa"
+            return-object
+            label="Empresas"
+            dark
+            @change="changeCompanyInfo"
+          >
+            <template slot="selection" slot-scope="data">
+              <v-icon x-small color="white darken-2"> mdi-domain </v-icon>
+              <strong class="ml-2">{{ data.item.name }}</strong>
+            </template>
+            <template slot="item" slot-scope="data">
+              <v-icon> mdi-domain </v-icon>
+              <strong class="ml-2">{{ data.item.name }}</strong>
+            </template>
+          </v-select>
+        </v-col>
+      </v-row>
+
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -130,8 +164,15 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-
     <div class="breadCrumb">
+      <article :style="!drawer ? '' : 'margin-left: -11%;'" v-if="userData && userData.profiles && userData.profiles.indexOf('RECRUITER') != -1 && company && !company['companyId']">
+        <v-row align="center" justify="center">
+          <v-icon large class="white--text jello-vertical">touch_app</v-icon>
+        </v-row>
+        <v-row align="center" justify="center">
+          <div class="white--text mt-2">Selecione a empresa no menu acima!</div>
+        </v-row>
+      </article>
       <span style="font-size: 1.4em" class="font-weight-bold"
         >{{ this.$router.currentRoute.name }}
       </span>
@@ -140,12 +181,14 @@
 </template>
 
 <script>
+import { Jobs } from "@/services/jobs.js";
 export default {
   props: {
     source: String,
     userData: Object,
     profile: String,
     company: Object,
+    mainControll: Object,
   },
   data: () => ({
     drawer: null,
@@ -163,15 +206,25 @@ export default {
       { _id: "out", icon: "logout", text: "Sair", path: "/" },
     ],
     companyItems: [
-      { _id: "recruiters", icon: "mdi-account-tie", text: "Seus Recrutadores", path: "/company" },
+      {
+        _id: "recruiters",
+        icon: "mdi-account-tie",
+        text: "Seus Recrutadores",
+        path: "/company",
+      },
       { _id: "jobs", icon: "school", text: "Suas Vagas", path: "/jobs" },
-      { _id: "profile", icon: "business", text: "Sua Empresa", path: "/profile" },
+      {
+        _id: "profile",
+        icon: "business",
+        text: "Sua Empresa",
+        path: "/profile",
+      },
       { _id: "out", icon: "logout", text: "Sair", path: "/" },
     ],
   }),
   methods: {
     getImgAvatar() {
-      if (this.userData && this.userData.hasOwnProperty('userId')) {
+      if (this.userData && this.userData.hasOwnProperty("userId")) {
         if (
           this.userData.gender &&
           this.userData.gender.toLowerCase().indexOf("female") != -1
@@ -181,7 +234,7 @@ export default {
           return require("@/assets/avatar-demo.a70aed79.png");
         }
       } else {
-          return require("@/assets/institucional_icon.png");
+        return require("@/assets/institucional_icon.png");
       }
     },
     moveToRoute(item, profile) {
@@ -189,6 +242,23 @@ export default {
       if (this.$router.currentRoute && this.$router.currentRoute.path != path) {
         this.$router.push(path);
       }
+    },
+    changeCompanyInfo(company) {
+      const jbservice = new Jobs();
+      this.mainControll.globalLoading = true;
+      jbservice
+        .getDashFromCompanyJobs(company._id)
+        .then((success) => {
+          this.mainControll.globalLoading = false;
+          this.mainControll.dashInfo = success.data.dashInfo;
+          this.mainControll.company["companyId"] = company._id;
+          this.mainControll.company["name"] = company.name;
+        })
+        .catch((err) => {
+          this.mainControll.globalLoading = false;
+          this.mainControll.dashInfo = {};
+          this.mainControll.company = {};
+        });
     },
   },
 };
@@ -247,5 +317,172 @@ export default {
   z-index: 0;
   font-size: 1.5em;
   color: white;
+}
+.custom-v-select .v-list-item {
+  display: block !important;
+}
+
+.text-focus-in {
+  -webkit-animation: text-focus-in 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53)
+    both;
+  animation: text-focus-in 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+.tracking-in-expand {
+  -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1)
+    both;
+  animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-9-27 16:28:53
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation tracking-in-expand
+ * ----------------------------------------
+ */
+@-webkit-keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-9-27 16:26:17
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation text-focus-in
+ * ----------------------------------------
+ */
+@-webkit-keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+.jello-vertical {
+  -webkit-animation: jello-vertical 0.9s infinite;
+  animation: jello-vertical 0.9s infinite;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-9-27 16:44:7
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation jello-vertical
+ * ----------------------------------------
+ */
+@-webkit-keyframes jello-vertical {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(0.85, 1.15, 1);
+    transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes jello-vertical {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(0.85, 1.15, 1);
+    transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
 }
 </style>

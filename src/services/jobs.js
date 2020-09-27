@@ -33,4 +33,10 @@ export class Jobs extends BaseApi {
             { done: action }
         )
     }
+
+    async getDashFromCompanyJobs(companyId){
+        return axios.get(
+            `${this.jobUri}/company/${companyId}`
+        )
+    }
 }
