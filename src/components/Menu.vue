@@ -29,7 +29,13 @@
       <v-spacer></v-spacer>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
+    <v-navigation-drawer
+      v-if="userData && userData.hasOwnProperty('userId')"
+      v-model="drawer"
+      app
+      clipped
+      color="grey lighten-4"
+    >
       <div class="avatarPanel">
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
@@ -73,10 +79,62 @@
         </template>
       </v-list>
     </v-navigation-drawer>
+
+    <v-navigation-drawer
+      v-else-if="company && company.hasOwnProperty('companyId')"
+      v-model="drawer"
+      app
+      clipped
+      color="grey lighten-4"
+    >
+      <div class="avatarPanel">
+        <v-avatar height="70" width="70">
+          <img class="avatar" :src="getImgAvatar()" alt="John" />
+        </v-avatar>
+        <h4 style="font-weight: 500">{{ company.name }}</h4>
+        <h5 style="color: grey">{{ company.description }}</h5>
+      </div>
+      <v-list dense class="grey lighten-4">
+        <template v-for="(item, i) in companyItems">
+          <v-row v-if="item.heading" :key="i" align="center">
+            <v-col cols="6">
+              <v-subheader v-if="item.heading">{{ item.heading }}</v-subheader>
+            </v-col>
+            <v-col cols="6" class="text-right">
+              <v-btn small text>edit</v-btn>
+            </v-col>
+          </v-row>
+          <v-divider
+            v-else-if="item.divider"
+            :key="i"
+            dark
+            class="my-4"
+          ></v-divider>
+          <v-list-item
+            style="cursor: pointer;!important"
+            v-else-if="!item.disable"
+            :key="i"
+            link
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title
+                @click="moveToRoute(item, profile)"
+                class="grey--text"
+                >{{ item.text }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-navigation-drawer>
+
     <div class="breadCrumb">
-      <span style="font-size: 1.4em" class="font-weight-bold">{{
-        this.$router.currentRoute.name
-      }}</span>
+      <span style="font-size: 1.4em" class="font-weight-bold"
+        >{{ this.$router.currentRoute.name }}
+      </span>
     </div>
   </div>
 </template>
@@ -87,6 +145,7 @@ export default {
     source: String,
     userData: Object,
     profile: String,
+    company: Object,
   },
   data: () => ({
     drawer: null,
@@ -103,25 +162,31 @@ export default {
       { _id: "profile", icon: "person", text: "Perfil", path: "/profile" },
       { _id: "out", icon: "logout", text: "Sair", path: "/" },
     ],
+    companyItems: [
+      { _id: "recruiters", icon: "mdi-account-tie", text: "Seus Recrutadores", path: "/company" },
+      { _id: "jobs", icon: "school", text: "Suas Vagas", path: "/jobs" },
+      { _id: "profile", icon: "business", text: "Sua Empresa", path: "/profile" },
+      { _id: "out", icon: "logout", text: "Sair", path: "/" },
+    ],
   }),
   methods: {
     getImgAvatar() {
-      if (
-        this.userData &&
-        this.userData.gender &&
-        this.userData.gender.toLowerCase().indexOf("female") != -1
-      ) {
-        return require("@/assets/avatar-recruiter-demo.330ee974.png");
+      if (this.userData && this.userData.hasOwnProperty('userId')) {
+        if (
+          this.userData.gender &&
+          this.userData.gender.toLowerCase().indexOf("female") != -1
+        ) {
+          return require("@/assets/avatar-recruiter-demo.330ee974.png");
+        } else {
+          return require("@/assets/avatar-demo.a70aed79.png");
+        }
       } else {
-        return require("@/assets/avatar-demo.a70aed79.png");
+          return require("@/assets/institucional_icon.png");
       }
     },
     moveToRoute(item, profile) {
       var path = item._id == "home" ? item.path + profile : item.path;
-      if (
-        this.$router.currentRoute && 
-        this.$router.currentRoute.path.indexOf(path) == -1
-      ) {
+      if (this.$router.currentRoute && this.$router.currentRoute.path != path) {
         this.$router.push(path);
       }
     },

@@ -24,6 +24,12 @@ export default {
   data: () => ({
     routes: routes
   }),
+  mounted(){
+    this.mainControll.userData = {}
+    this.mainControll.dashInfo = {}
+    this.mainControll.registerTab = false;
+    this.mainControll.showLoginDialog = false;
+  },
   methods:{
     openLoginDialog(){
       this.mainControll.registerTab = false;

@@ -25,6 +25,13 @@ export const routes = [
     logged: true
   },
   {
+    path: '/company',
+    name: 'Home Empresa',
+    component: () => import('@/views/Company.vue'),
+    // component: Candidate,
+    logged: true
+  },
+  {
     path: '/recruiter',
     name: 'Home Recrutador',
     component: () => import('@/views/Recruiter.vue'),

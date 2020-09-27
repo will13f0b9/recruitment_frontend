@@ -12,6 +12,9 @@ export class Users extends BaseApi {
         return axios.patch(`${this.cUri}/${id}`, params)
     }
 
+    async create(params) {
+        return axios.post(`${this.cUri}`, params)
+    }
 
     async authenticate(data) {
         return axios.post(`${this.cUri}/authenticate`, data)
@@ -25,5 +28,22 @@ export class Users extends BaseApi {
 
     async findUserById(id) {
         return axios.get(`${this.cUri}/${id}`);
+    }
+
+    async findUserByEmail(email) {
+        return axios.get(`${this.cUri}/?email=${email}`);
+    }
+
+    async findRecruiterByEmail(email) {
+        return axios.get(`${this.cUri}/?email=${email}&profiles=RECRUITER`);
+    }
+
+    async findAllRecruiterByCompanie(companieId){
+        return axios.get(`${this.cUri}/companies/${companieId}`)
+    }
+    
+    async addNewCompanyToUser(companyId, userId){
+        debugger;
+        return axios.post(`${this.cUri}/${userId}/companies/`, {companyId: companyId})
     }
 }

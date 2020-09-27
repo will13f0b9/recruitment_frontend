@@ -28,7 +28,7 @@
                   ? "de Empresa"
                   : i.id == "login" && loginForm.companyForm
                   ? "de Empresa"
-                  : ""
+                  : "de Pessoa"
               }}
             </h1>
             <v-card flat tile v-if="i.id === 'login'">
@@ -44,7 +44,6 @@
                   <v-text-field
                     v-if="!loginForm.companyForm"
                     v-model="loginForm.email"
-                    :rules="emailRules"
                     label="E-mail"
                     clearable
                     required
@@ -52,7 +51,6 @@
                   <v-text-field
                     v-else-if="loginForm.companyForm"
                     v-model="loginForm.cnpj"
-                    :rules="cnpjRules"
                     label="Cnpj"
                     clearable
                     required
@@ -109,7 +107,6 @@
                   <v-text-field
                     v-if="registerForm.companyForm"
                     v-model="registerForm.companyName"
-                    :rules="cnpjRules"
                     label="Nome da empresa"
                     clearable
                     required
@@ -125,11 +122,31 @@
 
                   <v-text-field
                     v-if="registerForm.companyForm"
-                    v-model="registerForm.companyDescription"
-                    label="Descrição"
+                    v-model="registerForm.location"
+                    label="Endereço"
                     clearable
                     required
                   ></v-text-field>
+
+                  <v-select
+                    v-if="registerForm.companyForm"
+                    v-model="registerForm.companyPlan"
+                    :items="mainControll.plans"
+                    item-text="name"
+                    item-value="_id"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    label="Plano"
+                    hint="Todos planos tem 7 dias gratis para teste!"
+                  ></v-select>
+
+                  <v-textarea
+                    v-if="registerForm.companyForm"
+                    label="Descrição da empresa"
+                    rows="1"
+                    clearable
+                    :auto-grow="true"
+                    v-model="registerForm.companyDescription"
+                  ></v-textarea>
 
                   <v-text-field
                     v-if="!registerForm.companyForm"
@@ -154,6 +171,26 @@
                     clearable
                   ></v-text-field>
 
+                  <v-select
+                    v-if="!registerForm.companyForm"
+                    v-model="registerForm.gender"
+                    :items="genderOptions"
+                    item-text="name"
+                    item-value="_id"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    label="Sexo"
+                  ></v-select>
+
+                  <v-textarea
+                    v-if="!registerForm.companyForm"
+                    label="Descrição do perfil"
+                    rows="1"
+                    clearable
+                    :auto-grow="true"
+                    :value="registerForm.description"
+                    v-model="registerForm.userDescription"
+                  ></v-textarea>
+
                   <v-text-field
                     v-model="registerForm.password"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -162,7 +199,6 @@
                     name="input-10-2"
                     label="Password"
                     clearable
-                    hint="No mínimo 8 caracteres"
                     value=""
                     class="input-group--focused"
                     required
@@ -181,7 +217,13 @@
                     Cancelar
                   </v-btn>
 
-                  <v-btn color="success" solid small class="mt-4">
+                  <v-btn
+                    color="success"
+                    @click="createResource"
+                    solid
+                    small
+                    class="mt-4"
+                  >
                     Cadastrar
                   </v-btn>
                 </v-form>
@@ -206,6 +248,7 @@
 
 <script>
 import { Users } from "@/services/users.js";
+import { Companies } from "@/services/companies.js";
 export default {
   props: {
     mainControll: Object,
@@ -222,10 +265,14 @@ export default {
     ],
     showPassword: false,
     valid: true,
+    genderOptions: [
+      { _id: "Male", name: "Masculino" },
+      { _id: "Female", name: "Feminino" },
+    ],
     registerForm: {
       companyForm: false,
       valid: true,
-      name: "",
+      userName: "",
       gender: "",
       dateOfBirth: "",
       cpf: "",
@@ -234,12 +281,15 @@ export default {
       password: "2020",
       companyName: "",
       companyDescription: "",
+      userDescription: "",
+      companyPlan: "",
+      location: "",
     },
     loginForm: {
       companyForm: false,
       valid: true,
       email: "farmacia@farmcia.com.br",
-      cnpj: "",
+      cnpj: "20923098238",
       password: "2020",
     },
     cnpjRules: [
@@ -309,15 +359,17 @@ export default {
   }),
   watch: {
     "mainControll.showLoginDialog"(after, before) {
-      this.mainControll.registerTab ? (this.tab = 1) : (this.tab = 0);
+      if (after) {
+        this.mainControll.registerTab ? (this.tab = 1) : (this.tab = 0);
+      }
       if (this["$refs"]) {
         if (this.$refs.formLogin) {
           this.$refs.formLogin[0].reset();
           this.$refs.formLogin[0].resetValidation();
         }
         if (this.$refs.formRegister) {
-          this.$refs.formLogin[0].reset();
-          this.$refs.formLogin[0].resetValidation();
+          this.$refs.formRegister[0].reset();
+          this.$refs.formRegister[0].resetValidation();
         }
       }
     },
@@ -335,24 +387,109 @@ export default {
       await user
         .authenticate(data)
         .then((success) => {
-          this.mainControll.userData = success.data.userInfo;
-          this.mainControll.dashInfo = success.data.dashInfo;
           this.mainControll.globalLoading = false;
 
-          this.$router.push(
-            "/" + this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
-              ? "candidate"
-              : "recruiter"
-          );
+          if (!success.data.hasOwnProperty("companyId")) {
+            this.mainControll.userData = success.data.userInfo;
+            this.mainControll.dashInfo = success.data.dashInfo;
+            this.$router.push(
+              "/" + this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
+                -1
+                ? "candidate"
+                : "recruiter"
+            );
+          } else {
+            this.mainControll.company = success.data;
+            this.$router.push("company");
+          }
+
           this.mainControll.showLoginDialog = false;
         })
         .catch((err) => {
-          alert(`Ops!! Algo deu errado: ${err.response.data.message}`);
+          alert(`Ops!! Algo deu errado ao logar: ${err.response.data.message}`);
           this.mainControll.userData = {};
           this.mainControll.dashInfo = {};
+          this.mainControll.company = {};
           this.mainControll.globalLoading = false;
         });
-    }
+    },
+    async createResource() {
+      const service = this.registerForm.companyForm
+        ? new Companies()
+        : new Users();
+      const data = {};
+      if (this.registerForm.companyForm) {
+        data["cnpj"] = this.registerForm.cnpj;
+        data["name"] = this.registerForm.companyName;
+        data["description"] = this.registerForm.companyDescription;
+        data["email"] = this.registerForm.email;
+        data["password"] = this.registerForm.password;
+        data["plan"] = this.registerForm.companyPlan;
+        data["location"] = this.registerForm.location;
+      } else {
+        data["cpf"] = this.registerForm.cpf;
+        data["name"] = this.registerForm.userName;
+        data["description"] = this.registerForm.userDescription;
+        data["email"] = this.registerForm.email;
+        data["password"] = this.registerForm.password;
+        data["gender"] = this.registerForm.gender;
+        data["profiles"] = ["CANDIDATE"];
+        data["dateOfBirth"] = this.registerForm.dateOfBirth;
+      }
+      debugger;
+      this.mainControll.globalLoading = true;
+      await service
+        .create(data)
+        .then(async (success) => {
+          const user = new Users();
+          const authData = { password: data.password };
+          if (this.loginForm.companyForm) {
+            authData["cnpj"] = this.loginForm.cnpj;
+          } else {
+            authData["email"] = this.loginForm.email;
+          }
+          await user
+            .authenticate(authData)
+            .then((success) => {
+              this.mainControll.globalLoading = false;
+
+              if (!success.data.hasOwnProperty("companyId")) {
+                this.mainControll.userData = success.data.userInfo;
+                this.mainControll.dashInfo = success.data.dashInfo;
+                this.$router.push(
+                  "/" +
+                    this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
+                    -1
+                    ? "candidate"
+                    : "recruiter"
+                );
+              } else {
+                this.mainControll.company = success.data;
+                this.$router.push("/company");
+              }
+
+              this.mainControll.showLoginDialog = false;
+            })
+            .catch((err) => {
+              alert(
+                `Ops!! Algo deu errado ao logar: ${err.response.data.message}`
+              );
+              this.mainControll.userData = {};
+              this.mainControll.dashInfo = {};
+              this.mainControll.company = {};
+              this.mainControll.globalLoading = false;
+            });
+        })
+        .catch((err) => {
+          alert(
+            `Ops!! Algo deu errado ao cadastrar: ${err.response.data.message}`
+          );
+          this.mainControll.userData = {};
+          this.mainControll.dashInfo = {};
+          this.mainControll.company = {};
+          this.mainControll.globalLoading = false;
+        });
+    },
   },
 };
 </script>

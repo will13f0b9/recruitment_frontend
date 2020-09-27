@@ -20,6 +20,7 @@
 <script>
 import Login from "@/components/Login.vue";
 import Logged from "@/views/Logged.vue";
+import {Companies} from "@/services/companies.js"
 export default {
   name: "App",
 
@@ -31,8 +32,19 @@ export default {
       globalLoading: false,
       dashInfo: {},
       userData: {},
+      company: {},
+      plans: []
     },
   }),
+  async mounted(){
+    const companie = new Companies();
+    await companie.getPlans().then(resp =>{
+      this.mainControll.plans = resp.data.items;
+    })
+    .catch(err =>{
+      this.mainControll.plans = []
+    })
+  }
 };
 </script>
 <style>

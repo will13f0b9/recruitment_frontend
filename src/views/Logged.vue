@@ -1,7 +1,7 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
-      v-if="mainControll.userData && !mainControll.userData.curriculum"
+      v-if="maincontroll && !maincontroll.company.hasOwnProperty('companyId') && mainControll.userData && !mainControll.userData.curriculum"
       color="yellow"
       border="left"
       elevation="2"
@@ -40,12 +40,14 @@
             : 'recruiter'
           : '#'
       "
+      :company="mainControll.company"
       >></Menu
     >
     <router-view
       :alert="alert"
       :userData="mainControll.userData"
       :dashInfo="mainControll.dashInfo"
+      :company="mainControll.company"
       :mainControll="mainControll"
     ></router-view>
   </v-app>
@@ -153,33 +155,33 @@ export default {
       console.log("LOGGED AREA", loggedArea);
       return loggedArea;
     },
+    canMoveToLandingPage() {
+      return (
+        !this.mainControll ||
+        (!this.mainControll.company || !this.mainControll.company.hasOwnProperty("companyId")) &&
+        (!this.mainControll.userData ||
+        !this.mainControll.userData.hasOwnProperty("userId"))
+      );
+    },
   },
   async mounted() {
     console.log("CREATED");
-    if (
-      !this.mainControll ||
-      !this.mainControll.userData ||
-      !this.mainControll.userData.hasOwnProperty("userId")
-    ) {
-        if(!this.$router.currentRoute || this.$router.currentRoute.path.indexOf("/") != -1){
+    if (this.canMoveToLandingPage()) {
+      if (this.$router.currentRoute.path != "/") {
         this.$router.push("/");
+        this.mainControll.showLoginDialog = true;
+        this.mainControll.registerTab = false;
       }
-      this.mainControll.showLoginDialog = true;
-      this.mainControll.registerTab = false;
     }
   },
-   async updated() {
+  async updated() {
     console.log("UPDATED");
-    if (
-      !this.mainControll ||
-      !this.mainControll.userData ||
-      !this.mainControll.userData.hasOwnProperty("userId")
-    ) {
-      if(!this.$router.currentRoute || this.$router.currentRoute.path.indexOf("/") != -1){
+    if (this.canMoveToLandingPage()) {
+      if (this.$router.currentRoute.path != "/") {
         this.$router.push("/");
+        this.mainControll.showLoginDialog = true;
+        this.mainControll.registerTab = false;
       }
-      this.mainControll.showLoginDialog = true;
-      this.mainControll.registerTab = false;
     }
   },
   watch: {
