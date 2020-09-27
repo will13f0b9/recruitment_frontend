@@ -63,7 +63,6 @@
                     name="input-10-2"
                     label="Password"
                     clearable
-                    hint="No mínimo 8 caracteres"
                     value=""
                     v-model="loginForm.password"
                     class="input-group--focused"

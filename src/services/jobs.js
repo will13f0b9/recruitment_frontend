@@ -8,11 +8,14 @@ export class Jobs extends BaseApi {
         this.jobUri = "/jobs"
     }
 
-    async getAll(params = {}) {
+    async getAll(companyId) {
+        let url = this.jobUri;
+        if (companyId) {
+            url = url + `?company=${companyId}`
+        }
         return axios.request({
             type: 'get',
-            url: this.jobUri,
-            params: params
+            url: url,
         })
     }
 
@@ -21,5 +24,13 @@ export class Jobs extends BaseApi {
             type: 'get',
             url: `${this.jobUri}/${id}`
         })
+    }
+
+
+    async changeJobDone(id, action) {
+        return axios.patch(
+            `${this.jobUri}/${id}`,
+            { done: action }
+        )
     }
 }

@@ -62,8 +62,8 @@
                   </v-row>
                   <v-card-actions class="mt-5 mb-0 pb-0">
                     <v-btn
-                      text
                       small
+                      dark
                       color="cyan darken-4"
                       @click="$router.push('/jobs/'+job._id)"
                     >Visualizar</v-btn>

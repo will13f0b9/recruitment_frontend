@@ -6,22 +6,39 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>mdi-checkbox-marked-circle</v-icon>
-        </v-btn>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar Vagas"
+          single-line
+          @keyup="filterJob"
+          clearable
+          hide-details
+        ></v-text-field>
       </v-toolbar>
-      <v-progress-linear color="teal" indeterminate :active="activeLoading" height="5"></v-progress-linear>
+      <v-progress-linear
+        color="teal"
+        indeterminate
+        :active="activeLoading"
+        height="5"
+      ></v-progress-linear>
       <v-list two-line>
         <v-list-item-group v-model="selected">
-          <template v-for="(item) in items" >
+          <template v-for="item in items">
             <v-divider :key="item._id" />
-            <v-list-item :key="item.title" :class="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1 ? 'green lighten-5' : ''">
+            <v-list-item
+              :key="item.title"
+              :class="
+                item.done
+                  ? 'doneJob'
+                  : item.cadidateUsers &&
+                    item.cadidateUsers.indexOf(userData.userId) != -1
+                  ? 'green lighten-5'
+                  : ''
+              "
+            >
               <template v-slot:default="{}">
-                <v-list-item-content @click="$router.push('/jobs/'+item._id)">
+                <v-list-item-content @click="$router.push('/jobs/' + item._id)">
                   <v-row no-gutters justify="space-between">
                     <v-col md="4">
                       <v-list-item-title
@@ -30,67 +47,116 @@
                         v-text="item.title"
                       ></v-list-item-title>
                     </v-col>
-                    <v-col md="2" sm="6" v-if="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1">
-                      <v-chip
-                        class="ma-1 font-wight-black font-weight-black"
-                        outlined
-                        color="indigo"
-                        label
-                      >CANDIDATADO!</v-chip>
-                    </v-col>
                     <v-col cols="12" md="2" sm="6" offset-md="4">
                       <!-- <span v-for="skill in item.requiredSkills" :key="skill">{{skill}}</span> -->
                       <v-chip
                         v-for="skill in item.requiredSkills"
                         :key="skill"
-                        style="height: 15px; font-size: 10px;"
+                        style="height: 15px; font-size: 10px"
                         class="ma-1 font-wight-black font-weight-black"
                         small
                         outlined
-                        :color="`#${((Math.random() * 0xffffff) <<0).toString(16)}`"
+                        :color="`#${((Math.random() * 0xffffff) << 0).toString(
+                          16
+                        )}`"
                         label
-                      >{{skill}}</v-chip>
+                        >{{ skill }}</v-chip
+                      >
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      md="2"
+                      sm="4"
+                      v-if="
+                        item.cadidateUsers &&
+                        item.cadidateUsers.indexOf(userData.userId) != -1
+                      "
+                    >
+                      <v-chip
+                        class="ma-1 font-wight-black font-weight-black"
+                        outlined
+                        small
+                        color="indigo"
+                        label
+                        >CANDIDATADO!</v-chip
+                      >
+                    </v-col>
+                    <v-col md="2" sm="4" v-if="item.done">
+                      <v-chip
+                        class="ma-1 font-wight-black font-weight-black"
+                        outlined
+                        small
+                        color="indigo"
+                        label
+                        >ENCERRADO!</v-chip
+                      >
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col sm="6" md="1" class="pt-0">
                       <v-list-item-subtitle
                         class="font-weight-bold success--text"
-                        v-text="item.salary ? `R$ ${item.salary.toLocaleString('pt-BR')}` : '-'"
+                        v-text="
+                          item.salary
+                            ? `R$ ${item.salary.toLocaleString('pt-BR')}`
+                            : '-'
+                        "
                       ></v-list-item-subtitle>
                     </v-col>
                     <v-col sm="6" md="2" class="pt-0">
                       <v-icon small>timer</v-icon>
-                      <small
-                        class="ml-2"
-                      >{{item.lastUpdateDate ? new Date(item.lastUpdateDate).toLocaleString() : '-'}}</small>
+                      <small class="ml-2">{{
+                        item.lastUpdateDate
+                          ? new Date(item.lastUpdateDate).toLocaleString()
+                          : "-"
+                      }}</small>
                     </v-col>
                     <v-col sm="6" md="2" class="pt-0">
                       <v-icon small>place</v-icon>
-                      <small class="mr-2">{{item.state ? item.state : '-'}}</small>
+                      <small class="mr-2">{{
+                        item.state ? item.state : "-"
+                      }}</small>
                       <v-divider vertical />
-                      <small class="ml-2">{{item.city ? item.city : '-'}}</small>
+                      <small class="ml-2">{{
+                        item.city ? item.city : "-"
+                      }}</small>
                     </v-col>
                   </v-row>
 
                   <div class="ellipse" v-text="item.description"></div>
-                  <v-row no-gutters :align="'center'" :justify="'end'" class="mt-2">
+                  <v-row
+                    no-gutters
+                    :align="'center'"
+                    :justify="'end'"
+                    class="mt-2"
+                  >
                     <v-col cols="24" :align="'end'">
                       <v-btn
                         class="ma-2 white--text"
                         x-small
-                        @click="$router.push('/jobs/'+item._id)"
+                        @click="$router.push('/jobs/' + item._id)"
                         outlined
                         color="teal"
-                      >Visualizar</v-btn>
+                        >Visualizar</v-btn
+                      >
                       <v-btn
                         class="ma-2 white--text"
-                        :disabled="item.cadidateUsers && item.cadidateUsers.indexOf(userData.userId) != -1 || !userData.curriculum"
+                        :disabled="
+                          (item.cadidateUsers &&
+                            item.cadidateUsers.indexOf(userData.userId) !=
+                              -1) ||
+                          !userData.curriculum
+                        "
                         x-small
                         solid
+                        v-if="company && !company.hasOwnProperty('companyId')"
                         color="teal"
-                        @click="$router.push('/jobs/'+item._id + '?candidate=true')"
-                      >Candidatar</v-btn>
+                        @click="
+                          $router.push('/jobs/' + item._id + '?candidate=true')
+                        "
+                        >Candidatar</v-btn
+                      >
                     </v-col>
                   </v-row>
                 </v-list-item-content>
@@ -106,8 +172,9 @@
 import Menu from "@/components/Menu.vue";
 import { Jobs } from "@/services/jobs.js";
 export default {
-  props:{
-    userData: Object
+  props: {
+    userData: Object,
+    company: Object,
   },
   components: {
     Menu: Menu,
@@ -116,12 +183,18 @@ export default {
     selected: [2],
     items: [],
     activeLoading: false,
+    search: "",
+    auxItems: [],
   }),
   async mounted() {
     const jobsApi = new Jobs();
     this.activeLoading = true;
+    let companyId;
+    if (this.company && this.company.hasOwnProperty("companyId")) {
+      companyId = this.company.companyId;
+    }
     await jobsApi
-      .getAll()
+      .getAll(companyId)
       .then((success) => {
         this.items = success.data.items;
         console.log(success);
@@ -134,12 +207,64 @@ export default {
   },
   methods: {
     openModalJob(jobId) {},
+    filterJob() {
+      if (!this.search && this.search == "") {
+        this.items = [...this.auxItems];
+      } else {
+        let search = this.search.toString().toLowerCase();
+        if (this.auxItems.length == 0) {
+          this.auxItems = [...this.items];
+        }
+        console.log(this.auxItems.length);
+        this.items = [...this.customFilter(this.auxItems, search)];
+      }
+    },
+    customFilter(items, search, filter) {
+      //this custom filter will do a multi-match separated by a space.
+      //e.g
+
+      if (!search) {
+        return items;
+      } //if the search is empty just return all the items
+
+      function new_filter(val, search) {
+        return (
+          val !== null &&
+          ["undefined", "boolean"].indexOf(typeof val) === -1 &&
+          val
+            .toString()
+            .toLowerCase()
+            .replace(/[^0-9a-zA-Z]+/g, "")
+            .indexOf(search) !== -1
+        );
+      }
+
+      let needleAry = search
+        .toString()
+        .toLowerCase()
+        .split(" ")
+        .filter((x) => x);
+      //whenever we encounter a space in our search we will filter for both the first and second word (or third word)
+
+      return items.filter((row) =>
+        needleAry.every((needle) =>
+          Object.keys(row).some((key) => new_filter(row[key], needle))
+        )
+      );
+      //foreach needle in our array cycle through the data (row[key]) in the current row looking for a match.
+      // .some will return true and exit the loop if it finds one it will return false if it doesnt
+      // .every will exit the loop if we dont find a match but will return true if all needles match
+      // .filter the rows on each match
+    },
   },
 };
 </script>
 <style scoped>
 .wrapper {
   z-index: 1;
+}
+.doneJob {
+  background-color: #ff000014;
 }
 .ellipse {
   display: block;
