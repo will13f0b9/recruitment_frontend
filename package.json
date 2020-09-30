@@ -21,6 +21,7 @@
     "sass-loader": "^8.0.0",
     "vue": "^2.6.11",
     "vue-cli-plugin-vuetify": "^2.0.7",
+    "vue-feather-icons": "^5.1.0",
     "vue-router": "^3.2.0",
     "vue-template-compiler": "^2.6.11",
     "vuetify": "^2.2.11",

@@ -64,6 +64,10 @@ export default {
   background: url("./assets/main_background.png");
 } */
 
+html {
+  scroll-behavior: smooth;
+}
+
 body,
 input,
 button {
