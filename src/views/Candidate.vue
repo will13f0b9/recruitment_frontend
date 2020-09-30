@@ -64,6 +64,7 @@
                     <v-btn
                       small
                       dark
+                      block
                       color="cyan darken-4"
                       @click="$router.push('/jobs/'+job._id)"
                     >Visualizar</v-btn>

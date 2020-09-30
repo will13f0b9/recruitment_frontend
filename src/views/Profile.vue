@@ -5,10 +5,7 @@
         class="mx-auto"
         v-if="
           userData &&
-          userData.hasOwnProperty('userId') &&
-          company &&
-          !company.hasOwnProperty('companyId')
-        "
+          userData.hasOwnProperty('profiles')"
       >
         <v-card-text>
           <div>Alteração de dados do perfil</div>
@@ -57,7 +54,7 @@
             </v-col>
           </v-row>
           <v-divider />
-          <v-row>
+          <v-row v-if="userData.profiles.indexOf('CANDIDATE') != -1">
             <v-col cols="12" sm="12d" md="6">
               <v-file-input
                 counter-size-string

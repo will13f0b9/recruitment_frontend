@@ -1,8 +1,26 @@
 <template>
   <v-container>
-    <v-card class="mx-auto" elevation="4">
+    <span v-show="!mainControll">{{ mainControll }}</span>
+    <v-card
+      class="mx-auto"
+      elevation="4"
+      v-if="
+        (userData &&
+          userData['profiles'] &&
+          userData['profiles'].indexOf('RECRUITER') != -1 &&
+          company &&
+          company['companyId']) ||
+        (userData &&
+          userData['profiles'] &&
+          userData.profiles.indexOf('CANDIDATE') != -1) ||
+        (company && company['companyId'])
+      "
+    >
       <v-toolbar color="amber darken-4" dark>
-        <v-toolbar-title>Vagas</v-toolbar-title>
+        <v-toolbar-title
+          >Vagas
+          <strong>{{ company ? company["name"] : "" }}</strong></v-toolbar-title
+        >
 
         <v-spacer></v-spacer>
 
@@ -175,6 +193,7 @@ export default {
   props: {
     userData: Object,
     company: Object,
+    mainControll: Object,
   },
   components: {
     Menu: Menu,
@@ -185,6 +204,7 @@ export default {
     activeLoading: false,
     search: "",
     auxItems: [],
+    companyId: undefined,
   }),
   async mounted() {
     const jobsApi = new Jobs();
@@ -196,14 +216,45 @@ export default {
     await jobsApi
       .getAll(companyId)
       .then((success) => {
+        this.companyId = companyId;
         this.items = success.data.items;
         console.log(success);
         this.activeLoading = false;
       })
       .catch((err) => {
+        this.companyId = undefined;
         this.activeLoading = false;
         console.log(err);
       });
+  },
+  watch: {
+    mainControll: {
+      handler: async function (after, before) {
+        // Return the object that changed
+        debugger;
+        if (after && after.company) {
+          debugger;
+          if (after.company.companyId != this.companyId) {
+            debugger;
+            const jobsApi = new Jobs();
+            await jobsApi
+              .getAll(after.company.companyId)
+              .then((success) => {
+                this.companyId = after.company.companyId;
+                this.items = success.data.items;
+                console.log(success);
+                this.activeLoading = false;
+              })
+              .catch((err) => {
+                this.companyId = undefined;
+                this.activeLoading = false;
+                console.log(err);
+              });
+          }
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     openModalJob(jobId) {},

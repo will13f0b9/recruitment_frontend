@@ -1,7 +1,12 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
-      v-if="maincontroll && !maincontroll.company.hasOwnProperty('companyId') && mainControll.userData && !mainControll.userData.curriculum"
+      v-if="
+        maincontroll &&
+        !maincontroll.company.hasOwnProperty('companyId') &&
+        mainControll.userData &&
+        !mainControll.userData.curriculum
+      "
       color="yellow"
       border="left"
       elevation="2"
@@ -33,6 +38,7 @@
     <Menu
       :userData="mainControll.userData"
       :dashInfo="mainControll.dashInfo"
+      :mainControll="mainControll"
       :profile="
         mainControll.userData && mainControll.userData.profiles
           ? mainControll.userData.profiles.indexOf('CANDIDATE') != -1
@@ -158,9 +164,10 @@ export default {
     canMoveToLandingPage() {
       return (
         !this.mainControll ||
-        (!this.mainControll.company || !this.mainControll.company.hasOwnProperty("companyId")) &&
-        (!this.mainControll.userData ||
-        !this.mainControll.userData.hasOwnProperty("userId"))
+        ((!this.mainControll.company ||
+          !this.mainControll.company.hasOwnProperty("companyId")) &&
+          (!this.mainControll.userData ||
+            !this.mainControll.userData.hasOwnProperty("userId")))
       );
     },
   },
@@ -171,6 +178,10 @@ export default {
         this.$router.push("/");
         this.mainControll.showLoginDialog = true;
         this.mainControll.registerTab = false;
+        debugger;
+        this.mainControll.dashInfo = Object.assign({}, {});
+        this.mainControll.userData = Object.assign({}, {});
+        this.mainControll.company = Object.assign({}, {});
       }
     }
   },
@@ -182,6 +193,11 @@ export default {
         this.mainControll.showLoginDialog = true;
         this.mainControll.registerTab = false;
       }
+    }
+    if (this.$router.currentRoute.path == "/") {
+      this.mainControll.dashInfo = Object.assign({}, {});
+      this.mainControll.userData = Object.assign({}, {});
+      this.mainControll.company = Object.assign({}, {});
     }
   },
   watch: {
