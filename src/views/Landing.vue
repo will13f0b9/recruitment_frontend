@@ -20,7 +20,13 @@
       </div>
     </div>
     <header style="display: flex;flex: 1;justify-content: space-between;padding: 0 10px;">
-      <img style="width: 150px;" alt="Vue logo" src="../assets/vaga-certa-logo.b1818157.png" />
+      <div style="display: flex; flex: 1; align-items: center; ">
+      <img style="width: 50px;" alt="Vue logo" src="../assets/VagaCertaIcon.png" />  
+      <span class="mt-2 tracking-in-expand">
+              Vaga&nbsp;
+              <span class="font-weight-light">Certa</span>
+      </span>
+      </div>
       <ul style="">
         <li><a href="#home">Home</a></li>
         <li><a href="#candidates">Para Candidatos</a></li>
