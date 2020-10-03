@@ -40,10 +40,9 @@
         <v-btn block @click="openRegisterDialog">Cadastro</v-btn>
       </div>
       <h1 class="wallpaper-title">MELHORES SOLUÇÕES DE RECRUTAMENTO PARA EMPRESAS E CANDIDATOS</h1>
-      <h2 class="wallpaper-description">Depois me da uma ideia de texto para colocar aqui</h2>
+      <h2 class="wallpaper-description">Venha agora fazer parte!</h2>
       <div class="button-bar-know-more-contact">
-        <button class="know-more">Saiba Mais</button>
-        <button class="contact">Entre em Contato</button>
+        <a href="#contacts"><button class="contact">Entre em Contato</button></a>
       </div>
     </div>
     <div class="box-plans-for-candidates" id="candidates">
@@ -85,7 +84,7 @@
           </ul>
         </div>
 
-        <button>Assinar Plano</button>
+        <button @click="openLoginDialog" >Começar Agora</button>
       </div>
     </div>
 
@@ -112,7 +111,7 @@
           </ul>
 
         </div>
-        <button>Assinar Plano</button>
+        <button @click="openRegisterDialog">Assinar Plano</button>
       </div>
     </div>
 
@@ -142,7 +141,7 @@
         <input placeholder="Seu nome">
         <input placeholder="Seu e-mail">
         <textarea placeholder="Sua mensagem"></textarea>
-        <button>Enviar Mensagem</button>
+        <button @click="successSnackBar('Mensagem enviada com sucesso')">Enviar Mensagem</button>
       </div>
     </div>
      <footer>
@@ -180,6 +179,11 @@ export default {
     this.mainControll.showLoginDialog = false;
   },
   methods:{
+    successSnackBar(message){
+      this.mainControll.alert.text= message;
+      this.mainControll.alert.color="green"
+      this.mainControll.alert.show = true;
+    },
     openLoginDialog(){
       this.mainControll.registerTab = false;
       this.mainControll.showLoginDialog = true;

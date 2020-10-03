@@ -4,7 +4,7 @@
       <v-card>
         <v-tabs
           v-model="tab"
-          background-color="indigo accent-5"
+          background-color="cyan dark-"
           class="elevation-2"
           dark
           :centered="centered"
@@ -13,7 +13,10 @@
           :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
           :icons-and-text="true"
         >
-          <v-tabs-slider class="yellow"></v-tabs-slider>
+          <v-tabs-slider
+            style="height: 5px;!important"
+            class="orange"
+          ></v-tabs-slider>
 
           <v-tab v-for="i in tabs" :key="`tab_${i.id}`">
             {{ i.title }}
@@ -32,25 +35,70 @@
               }}
             </h1>
             <v-card flat tile v-if="i.id === 'login'">
+              <v-switch
+                v-model="loginForm.companyForm"
+                color="yellow darken-4"
+                class="font-weight-bold"
+                label="Para Empresa ?"
+              ></v-switch>
               <v-card-text>
-                <v-form ref="formLogin" v-model="loginForm.valid">
-                  <v-switch
-                    v-model="loginForm.companyForm"
-                    color="yellow darken-4"
-                    class="font-weight-bold"
-                    label="Para Empresa ?"
-                  ></v-switch>
-
+                <v-form
+                  ref="formLoginUser"
+                  v-if="!loginForm.companyForm"
+                  v-model="loginForm.valid"
+                >
                   <v-text-field
-                    v-if="!loginForm.companyForm"
                     v-model="loginForm.email"
                     label="E-mail"
+                    :rules="emailRules"
                     clearable
                     required
                   ></v-text-field>
+
                   <v-text-field
-                    v-else-if="loginForm.companyForm"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="passwordRules"
+                    :type="showPassword ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="Password"
+                    clearable
+                    value=""
+                    v-model="loginForm.password"
+                    class="input-group--focused"
+                    @click:append="showPassword = !showPassword"
+                  ></v-text-field>
+
+                  <v-btn
+                    color="error"
+                    outlined
+                    small
+                    class="mt-4 mr-4"
+                    @click="
+                      mainControll.showLoginDialog = !mainControll.showLoginDialog
+                    "
+                  >
+                    Cancelar
+                  </v-btn>
+
+                  <v-btn
+                    color="teal"
+                    solid
+                    dark
+                    small
+                    class="mt-4"
+                    @click="logIn"
+                  >
+                    Logar
+                  </v-btn>
+                </v-form>
+                <v-form
+                  ref="formLoginCompany"
+                  v-if="loginForm.companyForm"
+                  v-model="loginForm.valid"
+                >
+                  <v-text-field
                     v-model="loginForm.cnpj"
+                    :rules="CnpjRules"
                     label="Cnpj"
                     clearable
                     required
@@ -95,72 +143,31 @@
               </v-card-text>
             </v-card>
             <v-card flat tile v-else-if="i.id === 'register'">
+              <v-switch
+                v-model="registerForm.companyForm"
+                color="yellow darken-4"
+                class="font-weight-bold"
+                label="Para Empresa ?"
+              ></v-switch>
               <v-card-text>
-                <v-form ref="formRegister" v-model="valid">
-                  <v-switch
-                    v-model="registerForm.companyForm"
-                    color="yellow darken-4"
-                    class="text-weight-bold"
-                    label="Para Empresa ?"
-                  ></v-switch>
-
+                <v-form
+                  ref="formRegisterUser"
+                  v-if="!registerForm.companyForm"
+                  v-model="valid"
+                >
                   <v-text-field
-                    v-if="registerForm.companyForm"
-                    v-model="registerForm.companyName"
-                    label="Nome da empresa"
-                    clearable
-                    required
-                  ></v-text-field>
-
-                  <v-text-field
-                    v-if="registerForm.companyForm"
-                    v-model="registerForm.cnpj"
-                    label="CNPJ"
-                    clearable
-                    required
-                  ></v-text-field>
-
-                  <v-text-field
-                    v-if="registerForm.companyForm"
-                    v-model="registerForm.location"
-                    label="Endereço"
-                    clearable
-                    required
-                  ></v-text-field>
-
-                  <v-select
-                    v-if="registerForm.companyForm"
-                    v-model="registerForm.companyPlan"
-                    :items="mainControll.plans"
-                    item-text="name"
-                    item-value="_id"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    label="Plano"
-                    hint="Todos planos tem 7 dias gratis para teste!"
-                  ></v-select>
-
-                  <v-textarea
-                    v-if="registerForm.companyForm"
-                    label="Descrição da empresa"
-                    rows="1"
-                    clearable
-                    :auto-grow="true"
-                    v-model="registerForm.companyDescription"
-                  ></v-textarea>
-
-                  <v-text-field
-                    v-if="!registerForm.companyForm"
                     v-model="registerForm.userName"
+                    :rules="nameRules"
                     label="Nome"
                     clearable
                     required
                   ></v-text-field>
 
                   <v-text-field
-                    v-if="!registerForm.companyForm"
                     v-model="registerForm.cpf"
                     label="CPF"
                     clearable
+                    :rules="cpfRules"
                     required
                   ></v-text-field>
 
@@ -172,7 +179,6 @@
                   ></v-text-field>
 
                   <v-select
-                    v-if="!registerForm.companyForm"
                     v-model="registerForm.gender"
                     :items="genderOptions"
                     item-text="name"
@@ -182,7 +188,6 @@
                   ></v-select>
 
                   <v-textarea
-                    v-if="!registerForm.companyForm"
                     label="Descrição do perfil"
                     rows="1"
                     clearable
@@ -190,6 +195,119 @@
                     :value="registerForm.description"
                     v-model="registerForm.userDescription"
                   ></v-textarea>
+
+                  <v-text-field
+                    v-model="registerForm.password"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="passwordRules"
+                    :type="showPassword ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="Password"
+                    clearable
+                    value=""
+                    class="input-group--focused"
+                    required
+                    @click:append="showPassword = !showPassword"
+                  ></v-text-field>
+
+                  <v-btn
+                    color="error"
+                    outlined
+                    small
+                    class="mt-4 mr-4"
+                    @click="
+                      mainControll.showLoginDialog = !mainControll.showLoginDialog
+                    "
+                  >
+                    Cancelar
+                  </v-btn>
+
+                  <v-btn
+                    color="teal"
+                    @click="createResource"
+                    solid
+                    small
+                    dark
+                    class="mt-4"
+                  >
+                    Cadastrar
+                  </v-btn>
+                </v-form>
+                <v-form ref="formRegisterCompany" v-else v-model="valid">
+                  <v-text-field
+                    v-if="registerForm.companyForm"
+                    v-model="registerForm.companyName"
+                    :rules="nameRules"
+                    label="Nome da empresa"
+                    clearable
+                    required
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-if="registerForm.companyForm"
+                    v-model="registerForm.cnpj"
+                    label="CNPJ"
+                    :rules="cnpjRules"
+                    clearable
+                    required
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-if="registerForm.companyForm"
+                    v-model="registerForm.location"
+                    label="Endereço"
+                    :rules="locationRules"
+                    clearable
+                    required
+                  ></v-text-field>
+
+                  <v-select
+                    v-if="registerForm.companyForm"
+                    v-model="registerForm.companyPlan"
+                    class="mt-4 custom-v-select"
+                    :items="mainControll.plans"
+                    item-value="_id"
+                    :rules="planRules"
+                    item-text="name"
+                    no-data-text="Sem dados de empresa"
+                    label="Plano"
+                    hint="Todos planos tem 7 dias gratis para teste!"
+                    persistent-hint
+                  >
+                    <template slot="selection" slot-scope="data">
+                      <strong class="ml-2">{{ data.item.name }}</strong>
+                    </template>
+                    <template slot="item" slot-scope="data">
+                      <div>
+                        <div class="text--grey font-weight-bold">
+                          <v-icon color="teal darken-2" class="mr-4">
+                            mdi-handshake
+                          </v-icon>
+                          <strong>{{ data.item.name }}</strong>
+                        </div>
+                        <small style="color: grey">{{
+                          data.item.description
+                        }}</small>
+                      </div>
+                    </template>
+                  </v-select>
+
+                  <v-textarea
+                    v-if="registerForm.companyForm"
+                    label="Descrição da empresa"
+                    rows="1"
+                    clearable
+                    :rules="descriptionRules"
+                    :auto-grow="true"
+                    v-model="registerForm.companyDescription"
+                  ></v-textarea>
+
+                  <v-text-field
+                    v-model="registerForm.email"
+                    :rules="emailRules"
+                    label="E-mail"
+                    clearable
+                  ></v-text-field>
 
                   <v-text-field
                     v-model="registerForm.password"
@@ -269,6 +387,7 @@ export default {
     genderOptions: [
       { _id: "Male", name: "Masculino" },
       { _id: "Female", name: "Feminino" },
+      { _id: "Undefined", name: "Indefinido" },
     ],
     registerForm: {
       companyForm: false,
@@ -293,6 +412,47 @@ export default {
       cnpj: "20923098238",
       password: "2020",
     },
+    cpfRules: [
+      (cpf) => {
+        let sum, rest;
+
+        if (!cpf || cpf.trim().length === 0) {
+          return true;
+        }
+
+        if (cpf === "00000000000") {
+          return "CPF Inválido";
+        }
+        cpf = cpf.replace(".", "").replace(".", "").replace("-", "");
+
+        sum = 0;
+        for (let i = 1; i <= 9; i++) {
+          sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        }
+        rest = (sum * 10) % 11;
+
+        if (rest === 10 || rest === 11) {
+          rest = 0;
+        }
+        if (rest !== parseInt(cpf.substring(9, 10))) {
+          return "CPF Inválido";
+        }
+
+        sum = 0;
+        for (let i = 1; i <= 10; i++) {
+          sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        }
+        rest = (sum * 10) % 11;
+
+        if (rest === 10 || rest === 11) {
+          rest = 0;
+        }
+        if (rest !== parseInt(cpf.substring(10, 11))) {
+          return "CPF Inválido";
+        }
+        return true;
+      },
+    ],
     cnpjRules: [
       (v) => {
         if (!v) return "CNPJ é Obrigatório";
@@ -345,11 +505,25 @@ export default {
       },
     ],
     nameRules: [
-      (v) => !!v || "Nome é obrigatório",
+      (v) => !!v || "Campo Nome é obrigatório",
+      //   (v) => (v && v.length <= 10) || "N",
+    ],
+    planRules: [
+      (v) => !!v || "Plano é obrigatório",
       //   (v) => (v && v.length <= 10) || "N",
     ],
     passwordRules: [
-      (value) => !!value || "Password é Obrigatório",
+      (value) => !!value || "Password é obrigatório",
+      //   (v) => v.length >= 8 || "Min de 8 caracteres",
+      //   () => "The email and password you entered don't match",
+    ],
+    descriptionRules: [
+      (value) => !!value || "Descrição da empresa é um campo obrigatório",
+      //   (v) => v.length >= 8 || "Min de 8 caracteres",
+      //   () => "The email and password you entered don't match",
+    ],
+    locationRules: [
+      (value) => !!value || "Localização da empresa é um campo obrigatório",
       //   (v) => v.length >= 8 || "Min de 8 caracteres",
       //   () => "The email and password you entered don't match",
     ],
@@ -384,40 +558,71 @@ export default {
       } else {
         data["email"] = this.loginForm.email;
       }
-      this.mainControll.globalLoading = true;
-      await user
-        .authenticate(data)
-        .then((success) => {
-          this.mainControll.globalLoading = false;
-          if (!success.data.hasOwnProperty("companyId")) {
-            this.mainControll.userData = success.data.userInfo;
-            this.mainControll.dashInfo = success.data.dashInfo;
-            const path =
-              this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
-                ? "candidate"
-                : "recruiter";
-            this.$router.push("/" + path);
-          } else {
-            this.mainControll.company = success.data;
-            this.$router.push("company");
-          }
 
-          this.mainControll.showLoginDialog = false;
-        })
-        .catch((err) => {
-          alert(`Ops!! Algo deu errado ao logar: ${err.response.data.message}`);
-          this.mainControll.userData = {};
-          this.mainControll.dashInfo = {};
-          this.mainControll.company = {};
-          this.mainControll.globalLoading = false;
-        });
+      const form = this.loginForm.companyForm
+        ? this.$refs.formLoginCompany
+        : this.$refs.formLoginUser;
+
+      if (form[0].validate()) {
+        this.mainControll.globalLoading = true;
+        await user
+          .authenticate(data)
+          .then((success) => {
+            this.mainControll.globalLoading = false;
+            if (!success.data.hasOwnProperty("companyId")) {
+              this.mainControll.userData = success.data.userInfo;
+              this.mainControll.dashInfo = success.data.dashInfo;
+              const path =
+                this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
+                  ? "candidate"
+                  : "recruiter";
+              this.$router.push("/" + path);
+            } else {
+              this.mainControll.company = success.data;
+              this.$router.push("company");
+            }
+
+            this.mainControll.showLoginDialog = false;
+          })
+          .catch((err) => {
+            try {
+              this.showInvalidSnackBar(err.response.data.message);
+            } catch (err) {
+              console.error(err);
+              this.showInvalidSnackBar(`Aconteceu algum erro inesperado`);
+            }
+            this.mainControll.userData = {};
+            this.mainControll.dashInfo = {};
+            this.mainControll.company = {};
+            this.mainControll.globalLoading = false;
+          });
+      }
     },
     async createResource() {
+      this.mainControll.globalLoading = true;
+
       const service = this.registerForm.companyForm
         ? new Companies()
         : new Users();
       const data = {};
+
+      let canCreate = false;
+
       if (this.registerForm.companyForm) {
+        if (this.registerForm.cnpj) {
+          await service.findByCnpj(this.registerForm.cnpj).then((success) => {
+            if (
+              success.status == 200 &&
+              success.data.items &&
+              success.data.items.length == 0
+            ) {
+              canCreate = true;
+            } else {
+              this.showInvalidSnackBar("CNPJ informado já está cadastrado!");
+            }
+          });
+        }
+
         data["cnpj"] = this.registerForm.cnpj;
         data["name"] = this.registerForm.companyName;
         data["description"] = this.registerForm.companyDescription;
@@ -426,66 +631,104 @@ export default {
         data["plan"] = this.registerForm.companyPlan;
         data["location"] = this.registerForm.location;
       } else {
+        if (this.registerForm.email) {
+          await service
+            .findUserByEmail(this.registerForm.email)
+            .then((success) => {
+              if (
+                success.status == 200 &&
+                success.data.items &&
+                success.data.items.length == 0
+              ) {
+                canCreate = true;
+              } else {
+                this.showInvalidSnackBar("Email informado já está cadastrado!");
+              }
+            });
+        }
+
         data["cpf"] = this.registerForm.cpf;
         data["name"] = this.registerForm.userName;
         data["description"] = this.registerForm.userDescription;
         data["email"] = this.registerForm.email;
         data["password"] = this.registerForm.password;
-        data["gender"] = this.registerForm.gender;
+        data["gender"] = this.registerForm.gender
+          ? this.registerForm.gender
+          : "Undefined";
         data["profiles"] = ["CANDIDATE"];
         data["dateOfBirth"] = this.registerForm.dateOfBirth;
       }
-      debugger;
-      this.mainControll.globalLoading = true;
-      await service
-        .create(data)
-        .then(async (success) => {
-          const user = new Users();
-          const authData = { password: data.password };
-          if (this.loginForm.companyForm) {
-            authData["cnpj"] = this.loginForm.cnpj;
-          } else {
-            authData["email"] = this.loginForm.email;
-          }
-          await user
-            .authenticate(authData)
-            .then((success) => {
-              this.mainControll.globalLoading = false;
-              debugger;
-              if (!success.data.hasOwnProperty("companyId")) {
-                this.mainControll.userData = success.data.userInfo;
-                this.mainControll.dashInfo = success.data.dashInfo;
-                const path =
-                  this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
-                    ? "candidate"
-                    : "recruiter";
-                this.$router.push("/" + path);
-              } else {
-                this.mainControll.company = success.data;
-                this.$router.push("/company");
-              }
 
-              this.mainControll.showLoginDialog = false;
-            })
-            .catch((err) => {
-              alert(
-                `Ops!! Algo deu errado ao logar: ${err.response.data.message}`
-              );
-              this.mainControll.userData = {};
-              this.mainControll.dashInfo = {};
-              this.mainControll.company = {};
-              this.mainControll.globalLoading = false;
-            });
-        })
-        .catch((err) => {
-          alert(
-            `Ops!! Algo deu errado ao cadastrar: ${err.response.data.message}`
-          );
-          this.mainControll.userData = {};
-          this.mainControll.dashInfo = {};
-          this.mainControll.company = {};
-          this.mainControll.globalLoading = false;
-        });
+      const form = this.registerForm.companyForm
+        ? this.$refs.formRegisterCompany
+        : this.$refs.formRegisterUser;
+
+      if (form[0].validate() && canCreate) {
+        this.mainControll.globalLoading = true;
+        await service
+          .create(data)
+          .then(async (success) => {
+            console.log(success);
+            const user = new Users();
+            const authData = { password: data.password };
+            if (this.loginForm.companyForm) {
+              authData["cnpj"] = data.cnpj;
+            } else {
+              authData["email"] = data.email;
+            }
+            await user
+              .authenticate(authData)
+              .then((success) => {
+                this.mainControll.globalLoading = false;
+                if (!success.data.hasOwnProperty("companyId")) {
+                  this.mainControll.userData = success.data.userInfo;
+                  this.mainControll.dashInfo = success.data.dashInfo;
+                  const path =
+                    this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
+                    -1
+                      ? "candidate"
+                      : "recruiter";
+                  this.$router.push("/" + path);
+                } else {
+                  this.mainControll.company = success.data;
+                  this.$router.push("/company");
+                }
+
+                this.mainControll.showLoginDialog = false;
+              })
+              .catch((err) => {
+                try {
+                  this.showInvalidSnackBar(err.response.data.message);
+                } catch (err) {
+                  console.error(err);
+                  this.showInvalidSnackBar(`Aconteceu algum erro inesperado`);
+                }
+                this.mainControll.userData = {};
+                this.mainControll.dashInfo = {};
+                this.mainControll.company = {};
+                this.mainControll.globalLoading = false;
+              });
+          })
+          .catch((err) => {
+            try {
+              this.showInvalidSnackBar(err.response.data.message);
+            } catch (err) {
+              console.error(err);
+              this.showInvalidSnackBar(`Aconteceu algum erro inesperado`);
+            }
+            this.mainControll.userData = {};
+            this.mainControll.dashInfo = {};
+            this.mainControll.company = {};
+            this.mainControll.globalLoading = false;
+          });
+      } else {
+        this.mainControll.globalLoading = false;
+      }
+    },
+    showInvalidSnackBar(message) {
+      this.mainControll.alert.color = "red";
+      this.mainControll.alert.text = message;
+      this.mainControll.alert.show = true;
     },
   },
 };

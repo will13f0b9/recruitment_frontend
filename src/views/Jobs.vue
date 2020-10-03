@@ -203,7 +203,7 @@ export default {
     items: [],
     activeLoading: false,
     search: "",
-    auxItems: [],
+    allJobs: [],
     companyId: undefined,
   }),
   async mounted() {
@@ -260,23 +260,20 @@ export default {
     openModalJob(jobId) {},
     filterJob() {
       if (!this.search && this.search == "") {
-        this.items = [...this.auxItems];
+        this.items = [...this.allJobs];
       } else {
         let search = this.search.toString().toLowerCase();
-        if (this.auxItems.length == 0) {
-          this.auxItems = [...this.items];
+        if (this.allJobs.length == 0) {
+          this.allJobs = [...this.items];
         }
-        console.log(this.auxItems.length);
-        this.items = [...this.customFilter(this.auxItems, search)];
+        console.log(this.allJobs.length);
+        this.items = [...this.applyAndGetOnlyFilteredData(this.allJobs, search)];
       }
     },
-    customFilter(items, search, filter) {
-      //this custom filter will do a multi-match separated by a space.
-      //e.g
-
+    applyAndGetOnlyFilteredData(items, search, filter) {
       if (!search) {
         return items;
-      } //if the search is empty just return all the items
+      } 
 
       function new_filter(val, search) {
         return (
@@ -295,17 +292,12 @@ export default {
         .toLowerCase()
         .split(" ")
         .filter((x) => x);
-      //whenever we encounter a space in our search we will filter for both the first and second word (or third word)
-
+      
       return items.filter((row) =>
         needleAry.every((needle) =>
           Object.keys(row).some((key) => new_filter(row[key], needle))
         )
       );
-      //foreach needle in our array cycle through the data (row[key]) in the current row looking for a match.
-      // .some will return true and exit the loop if it finds one it will return false if it doesnt
-      // .every will exit the loop if we dont find a match but will return true if all needles match
-      // .filter the rows on each match
     },
   },
 };

@@ -19,4 +19,8 @@ export class Companies extends BaseApi {
     async getPlans() {
         return axios.get(`/plans`);
     }
+
+    async findByCnpj(cnpj) {
+        return axios.get(`${this.cUri}?cnpj=${cnpj}`)
+    }
 }

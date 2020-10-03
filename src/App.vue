@@ -1,5 +1,13 @@
 <template>
   <v-app>
+    <v-snackbar style="top: 10%; left: -4%" :color="`${mainControll.alert.color} darken-4`" v-model="mainControll.alert.show" :top="true" :right="true" multi-line :timeout="10000"> 
+        <strong><h3>{{mainControll.alert.text}}</h3></strong>
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="mainControll.alert.show = false">
+          Fechar
+        </v-btn>
+      </template>
+    </v-snackbar>
     <Login :mainControll="mainControll"></Login>
     <v-col v-if="mainControll.globalLoading" class="global-loading" cols="12">
       <v-row align="center" justify="center" style="height: 80vh">
@@ -20,31 +28,39 @@
 <script>
 import Login from "@/components/Login.vue";
 import Logged from "@/views/Logged.vue";
-import {Companies} from "@/services/companies.js"
+import { Companies } from "@/services/companies.js";
 export default {
   name: "App",
 
   components: { Logged: Logged, Login: Login },
   data: () => ({
+    snackbar: true,
     mainControll: {
       showLoginDialog: false,
       registerTab: false,
       globalLoading: false,
+      alert: {
+        color: "green",
+        show: false,
+        text: ``
+      },
       dashInfo: {},
       userData: {},
       company: {},
-      plans: []
+      plans: [],
     },
   }),
-  async mounted(){
+  async mounted() {
     const companie = new Companies();
-    await companie.getPlans().then(resp =>{
-      this.mainControll.plans = resp.data.items;
-    })
-    .catch(err =>{
-      this.mainControll.plans = []
-    })
-  }
+    await companie
+      .getPlans()
+      .then((resp) => {
+        this.mainControll.plans = resp.data.items;
+      })
+      .catch((err) => {
+        this.mainControll.plans = [];
+      });
+  },
 };
 </script>
 <style>

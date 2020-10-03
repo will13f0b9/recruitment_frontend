@@ -24,7 +24,7 @@
         >Clique aqui!</strong
       >
     </v-alert>
-    <v-alert
+    <!-- <v-alert
       v-if="alert.show"
       :color="alert.collor"
       border="left"
@@ -34,7 +34,7 @@
       style="position: fixed; z-index: 99; width: 100%"
     >
       <strong>{{ alert.message }}</strong>
-    </v-alert>
+    </v-alert> -->
     <Menu
       :userData="mainControll.userData"
       :dashInfo="mainControll.dashInfo"
@@ -75,12 +75,6 @@ export default {
   components: { Menu: Menu },
 
   data: () => ({
-    alert: {
-      show: false,
-      collor: "",
-      icon: "",
-      message: "",
-    },
     userData: {},
     dashInfo: {},
     candidate: {
@@ -199,16 +193,7 @@ export default {
       this.mainControll.userData = Object.assign({}, {});
       this.mainControll.company = Object.assign({}, {});
     }
-  },
-  watch: {
-    "alert.show": function (after, before) {
-      if (after) {
-        setTimeout(() => {
-          this.alert.show = false;
-        }, 5000);
-      }
-    },
-  },
+  }
 };
 </script>
 <style>
