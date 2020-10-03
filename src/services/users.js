@@ -38,6 +38,10 @@ export class Users extends BaseApi {
         return axios.get(`${this.cUri}/?email=${email}&profiles=RECRUITER`);
     }
 
+    async findCandidateByEmail(email) {
+        return axios.get(`${this.cUri}/?email=${email}&profiles=CANDIDATE`);
+    }
+
     async findAllRecruiterByCompanie(companieId){
         return axios.get(`${this.cUri}/companies/${companieId}`)
     }

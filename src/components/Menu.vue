@@ -75,7 +75,18 @@
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
         <h4 style="font-weight: 500">{{ userData.name }}</h4>
-        <h5 style="color: grey">{{ userData.description }}</h5>
+        <h5
+          style="
+            color: grey;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          "
+        >
+          {{ userData.description }}
+        </h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">
@@ -165,7 +176,16 @@
       </v-list>
     </v-navigation-drawer>
     <div class="breadCrumb">
-      <article :style="!drawer ? '' : 'margin-left: -11%;'" v-if="userData && userData.profiles && userData.profiles.indexOf('RECRUITER') != -1 && company && !company['companyId']">
+      <article
+        :style="!drawer ? '' : 'margin-left: -11%;'"
+        v-if="
+          userData &&
+          userData.profiles &&
+          userData.profiles.indexOf('RECRUITER') != -1 &&
+          company &&
+          !company['companyId']
+        "
+      >
         <v-row align="center" justify="center">
           <v-icon large class="white--text jello-vertical">touch_app</v-icon>
         </v-row>

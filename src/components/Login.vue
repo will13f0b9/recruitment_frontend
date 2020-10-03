@@ -98,8 +98,8 @@
                 >
                   <v-text-field
                     v-model="loginForm.cnpj"
-                    :rules="CnpjRules"
-                    label="Cnpj"
+                    :rules="cnpjRules"
+                    label="CNPJ"
                     clearable
                     required
                   ></v-text-field>
@@ -194,6 +194,8 @@
                     :auto-grow="true"
                     :value="registerForm.description"
                     v-model="registerForm.userDescription"
+                    :rules="descRules"
+                    :counter="50"
                   ></v-textarea>
 
                   <v-text-field
@@ -299,6 +301,7 @@
                     clearable
                     :rules="descriptionRules"
                     :auto-grow="true"
+                    counter="50"
                     v-model="registerForm.companyDescription"
                   ></v-textarea>
 
@@ -409,9 +412,12 @@ export default {
       companyForm: false,
       valid: true,
       email: "farmacia@farmcia.com.br",
-      cnpj: "20923098238",
+      cnpj: "49577156000129",
       password: "2020",
     },
+    descRules: [
+      (v) => v && v.length <= 50 || "Campo descrição no máximo 50 caracteres",
+    ],
     cpfRules: [
       (cpf) => {
         let sum, rest;
@@ -519,6 +525,8 @@ export default {
     ],
     descriptionRules: [
       (value) => !!value || "Descrição da empresa é um campo obrigatório",
+      (v) => v.length <= 50 || "Campo descrição no máximo 50 caracteres",
+
       //   (v) => v.length >= 8 || "Min de 8 caracteres",
       //   () => "The email and password you entered don't match",
     ],

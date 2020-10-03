@@ -97,10 +97,10 @@
                 style="font-size: 1.4em"
               >
                 <v-icon class="mr-2">mdi_domain</v-icon>
-                {{ job.company ? job.company.name : '-' }}
+                {{ job.company ? job.company.name : "-" }}
               </div>
               <div class="ml-2 text-justify pr-2">
-                {{ job.company ? job.company.description : '-'}}
+                {{ job.company ? job.company.description : "-" }}
               </div>
             </v-col>
           </v-row>
@@ -224,10 +224,10 @@
           x-large
           block
           class="mt-5 white--text"
-          :color="job.done ? 'indigo': 'red'"
+          :color="job.done ? 'indigo' : 'red'"
           v-if="company && company.hasOwnProperty('companyId')"
           @click="changeJobDone(!job.done)"
-          >{{job.done ? 'Reabrir vaga' : 'Encerrar vaga'}}</v-btn
+          >{{ job.done ? "Reabrir vaga" : "Encerrar vaga" }}</v-btn
         >
       </article>
       <v-dialog v-model="dialog" persistent max-width="400">
@@ -262,7 +262,7 @@ export default {
     userData: Object,
     company: Object,
     mainControll: Object,
-    alert: Object
+    alert: Object,
   },
   components: {},
   data: () => ({
@@ -301,23 +301,26 @@ export default {
         .changeJobDone(this.job._id, action)
         .then((resp) => {
           this.mainControll.globalLoading = false;
-          this.alert.show = true;
-          this.alert.collor = "green";
-          this.alert.icon = "check";
-          this.alert.message = action ? "Vaga encerrada com sucesso!" : "Vaga reaberta para o mercado!";
+          this.showSuccessSnackBar(action
+            ? "Vaga encerrada com sucesso!"
+            : "Vaga reaberta para o mercado!");
           this.job.done = action;
         })
         .catch((err) => {
           this.mainControll.globalLoading = false;
-          this.alert.show = true;
-          this.alert.collor = "red darken-4";
-          this.alert.icon = "alert-circle";
-          this.alert.message =
-            "Não foi possível. Motivo " + err.response.data["message"]
-              ? err.response.data["message"]
-              : "desconhecido";
+          this.showInvalidSnackBar(err.response.data["message"])
           console.log(err);
         });
+    },
+    showInvalidSnackBar(message) {
+      this.mainControll.alert.color = "red";
+      this.mainControll.alert.text = message;
+      this.mainControll.alert.show = true;
+    },
+    showSuccessSnackBar(message) {
+      this.mainControll.alert.color = "green";
+      this.mainControll.alert.text = message;
+      this.mainControll.alert.show = true;
     },
   },
   watch: {

@@ -2,10 +2,11 @@
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
       v-if="
-        maincontroll &&
-        !maincontroll.company.hasOwnProperty('companyId') &&
+        mainControll &&
+        !mainControll.company.hasOwnProperty('companyId') &&
         mainControll.userData &&
-        !mainControll.userData.curriculum
+        mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
+        (!mainControll.userData.curriculum || mainControll.userData.curriculum.length > 0)
       "
       color="yellow"
       border="left"
@@ -47,10 +48,8 @@
           : '#'
       "
       :company="mainControll.company"
-      >></Menu
-    >
+      >></Menu>
     <router-view
-      :alert="alert"
       :userData="mainControll.userData"
       :dashInfo="mainControll.dashInfo"
       :company="mainControll.company"
