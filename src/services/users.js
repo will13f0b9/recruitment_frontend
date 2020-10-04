@@ -47,7 +47,6 @@ export class Users extends BaseApi {
     }
     
     async addNewCompanyToUser(companyId, userId){
-        debugger;
         return axios.post(`${this.cUri}/${userId}/companies/`, {companyId: companyId})
     }
 }

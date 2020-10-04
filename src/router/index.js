@@ -63,6 +63,13 @@ export const routes = [
     logged: true,
     hidden: true
   },
+  {
+    path: '/jobs/:id/exams/users/:userId',
+    name: 'Exames',
+    component: () => import('@/views/Exams.vue'),
+    logged: true,
+    hidden: true
+  },
 ]
 
 const router = new VueRouter({

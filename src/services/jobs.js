@@ -34,21 +34,25 @@ export class Jobs extends BaseApi {
         )
     }
 
-    async getDashFromCompanyJobs(companyId){
+    async getDashFromCompanyJobs(companyId) {
         return axios.get(
             `${this.jobUri}/company/${companyId}`
         )
     }
 
-    async getCandidatesInJob(jobId){
+    async getCandidatesInJob(jobId) {
         return axios.get(`${this.jobUri}/${jobId}/candidates/`)
     }
 
-    async approveCandidateToJob(jobId, candidateId){
+    async approveCandidateToJob(jobId, candidateId) {
         return axios.post(`${this.jobUri}/${jobId}/approve/${candidateId}`)
     }
 
-    async repproveCandidateToJob(jobId, candidateId){
+    async repproveCandidateToJob(jobId, candidateId) {
         return axios.post(`${this.jobUri}/${jobId}/repprove/${candidateId}`)
+    }
+
+    async candidateUserToJob(jobId, candidateId) {
+        return axios.post(`${this.jobUri}/${jobId}/candidate/${candidateId}`)
     }
 }

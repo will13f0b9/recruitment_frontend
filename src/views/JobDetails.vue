@@ -44,7 +44,6 @@
                 ></span>
               </div>
             </v-col>
-
             <v-col cols="6" sm="6" md="3">
               <div class="text-center grey--text font-weight-bold">
                 Criado em:
@@ -206,17 +205,33 @@
           block
           class="mt-5"
           color="success"
+          v-if="
+            company &&
+            !company.hasOwnProperty('companyId') &&
+            job.cadidateUsers &&
+            job.cadidateUsers.indexOf(userData.userId) != -1 &&
+            job.examConfig
+          "
+          @click="pushToExame()"
+          >Visualizar Exame</v-btn
+        >
+        <v-btn
+          x-large
+          block
+          color="success"
           v-if="company && !company.hasOwnProperty('companyId')"
           :disabled="
             (job.cadidateUsers &&
               job.cadidateUsers.indexOf(userData.userId) != -1) ||
-            !userData.curriculum
+            !userData.curriculum || job.done
           "
           @click="dialog = !dialog"
           >{{
             job.cadidateUsers &&
             job.cadidateUsers.indexOf(userData.userId) != -1
               ? "Você já está candidatado a vaga"
+              : job.done
+              ? "Vaga encerrada!"
               : "Candidatar-se!"
           }}</v-btn
         >
@@ -259,7 +274,7 @@
             <v-btn
               color="green darken-1"
               class="white--text"
-              @click="dialog = false"
+              @click="initExam()"
               >Começar!</v-btn
             >
           </v-card-actions>
@@ -726,6 +741,38 @@ export default {
           this.showInvalidSnackBar(
             "Não foi possível visualizar detalhes dos candidatos"
           );
+        });
+    },
+    pushToExame() {
+      const id = this.job._id;
+      const userId = this.mainControll.userData.userId;
+
+      this.$router.push(`/jobs/${id}/exams/users/${userId}`);
+    },
+    async initExam() {
+      const job = new Jobs();
+      this.mainControll.globalLoading = true;
+
+      const id = this.job._id;
+      const userId = this.mainControll.userData.userId;
+
+      await job
+        .candidateUserToJob(id, userId)
+        .then((resp) => {
+          this.mainControll.globalLoading = false;
+          this.dialog = false;
+          if (resp.status == 200) {
+            this.pushToExame();
+          } else {
+            this.showInvalidSnackBar(resp.data["message"]);
+          }
+          this.dialog = false;
+        })
+        .catch((err) => {
+          this.dialog = false;
+          this.mainControll.globalLoading = false;
+          console.error(err);
+          this.showInvalidSnackBar(err.response.data["message"]);
         });
     },
   },
