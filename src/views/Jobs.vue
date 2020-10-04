@@ -231,11 +231,8 @@ export default {
     mainControll: {
       handler: async function (after, before) {
         // Return the object that changed
-        debugger;
         if (after && after.company) {
-          debugger;
           if (after.company.companyId != this.companyId) {
-            debugger;
             const jobsApi = new Jobs();
             await jobsApi
               .getAll(after.company.companyId)

@@ -221,9 +221,22 @@
           }}</v-btn
         >
         <v-btn
+          v-if="company && company.hasOwnProperty('companyId')"
+          class="mt-5"
+          color="teal"
+          block
+          x-large
+          raised
+          dark
+          @click="findCandidates(job._id)"
+        >
+          <span class="mr-2">Visualizar Candidatos</span>
+          <v-icon dark small> mdi-eye-settings </v-icon>
+        </v-btn>
+        <v-btn
           x-large
           block
-          class="mt-5 white--text"
+          class="white--text"
           :color="job.done ? 'indigo' : 'red'"
           v-if="company && company.hasOwnProperty('companyId')"
           @click="changeJobDone(!job.done)"
@@ -252,11 +265,297 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="dialogCandidates" persistent max-width="800">
+        <v-card>
+          <v-card-title class="headline indigo--text"
+            >Candidatos a vaga</v-card-title
+          >
+          <article
+            v-if="
+              candidatesDetails &&
+              candidatesDetails.details &&
+              candidatesDetails.details.length > 0
+            "
+          >
+            <v-card-text>
+              <v-row
+                v-for="candidate in candidatesDetails.details"
+                :key="candidate.candidateId"
+                style="
+                  border: thin solid grey;
+                  margin-bottom: 5px;
+                  border-radius: 8px;
+                "
+              >
+                <div
+                  class="base approved"
+                  v-if="
+                    candidatesDetails.approved.indexOf(candidate.candidateId) !=
+                    -1
+                  "
+                >
+                  APROVADO
+                </div>
+
+                <div
+                  class="base repproved"
+                  v-else-if="
+                    candidatesDetails.repproved.indexOf(
+                      candidate.candidateId
+                    ) != -1
+                  "
+                >
+                  REPROVADO
+                </div>
+                <div class="base neutral" v-else>PENDENTE</div>
+                <v-col>
+                  <div class="ml-2 grey--text font-weight-bold">
+                    Nome do candidato:
+                  </div>
+                  <div class="ml-2 text-justify pr-2">
+                    {{
+                      candidate.candidateName ? candidate.candidateName : "-"
+                    }}
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="ml-2 grey--text font-weight-bold">
+                    Concluiu exame?:
+                  </div>
+
+                  <div class="ml-2 text-justify pr-2">
+                    <v-chip
+                      small
+                      :color="candidate.doneAt ? 'green' : 'red'"
+                      dark
+                      >{{ candidate.doneAt ? "Sim" : "Não" }}</v-chip
+                    >
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="ml-2 grey--text font-weight-bold">
+                    Data de inicio do exame:
+                  </div>
+                  <div class="ml-2 text-justify pr-2">
+                    {{
+                      candidate.startedAt
+                        ? new Date(candidate.startedAt).toLocaleString()
+                        : "-"
+                    }}
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="ml-2 grey--text font-weight-bold">
+                    Data de conclusão do exame:
+                  </div>
+                  <div class="ml-2 text-justify pr-2">
+                    {{
+                      candidate.doneAt
+                        ? new Date(candidate.doneAt).toLocaleString()
+                        : "-"
+                    }}
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="ml-2 font-weight-bold">
+                    <strong>Acertos</strong>
+                  </div>
+                  <div class="ml-2 text-justify pr-2">
+                    <strong>{{
+                      candidate.hitPercent ? candidate.hitPercent : "-"
+                    }}</strong>
+                  </div>
+                </v-col>
+                <v-col
+                  v-if="
+                    candidatesDetails.approved.indexOf(candidate.candidateId) !=
+                    -1
+                  "
+                  cols="12"
+                  sm="12"
+                  md="12"
+                >
+                  <div class="ml-2 font-weight-bold black--text">
+                    <strong>Contato:</strong>
+                  </div>
+                  <div class="ml-2 text-justify pr-2 weight-bold black--text">
+                    <strong>{{
+                      candidate.candidateEmail ? candidate.candidateEmail : "-"
+                    }}</strong>
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="12" md="12">
+                  <v-btn
+                    small
+                    color="teal"
+                    dark
+                    block
+                    outlined
+                    @click="visualizeCurriculum(candidate)"
+                    >Visualizar curriculum</v-btn
+                  >
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-btn
+                    small
+                    color="red"
+                    block
+                    outlined
+                    :disabled="
+                      candidatesDetails.repproved.indexOf(
+                        candidate.candidateId
+                      ) != -1
+                    "
+                    @click="selectToDispenseCandidate(candidate)"
+                    >Dispensar</v-btn
+                  >
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-btn
+                    small
+                    color="green"
+                    block
+                    :disabled="
+                      candidatesDetails.approved.indexOf(
+                        candidate.candidateId
+                      ) != -1
+                    "
+                    @click="selectCandidate(candidate)"
+                    >Aprovar</v-btn
+                  >
+                </v-col>
+                <v-divider />
+              </v-row>
+            </v-card-text>
+          </article>
+          <v-card-text v-else>Sem usúarios candidatados</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" dark @click="dialogCandidates = false"
+              >Fechar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="dialogAproveCandidate" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline red--text">Atenção</v-card-title>
+          <v-card-text>
+            <article v-if="!aproveText">
+              Deseja
+              <strong class="green--text"
+                >aprovar o candidato
+                <span class="black--text">{{
+                  selectedCandidate.candidateName
+                }}</span></strong
+              >?
+            </article>
+            <div v-else>
+              E-mail de contato do
+              <strong class="black--text">{{
+                selectedCandidate.candidateName
+              }}</strong
+              >:
+              <h2>
+                <strong>{{ selectedCandidate.candidateEmail }}</strong>
+              </h2>
+              <div>
+                <small class="mt-5"
+                  >Fique a vontade para entrar em contato! já notificaremos o
+                  candidato dos próximos passos!</small
+                >
+              </div>
+            </div>
+          </v-card-text>
+          <v-card-actions v-if="!aproveText">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              small
+              text
+              @click="dialogAproveCandidate = false"
+              >Agora não</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              class="white--text"
+              @click="approveCandidate()"
+              >Sim!</v-btn
+            >
+          </v-card-actions>
+          <v-card-actions v-else>
+            <v-btn
+              color="red darken-1"
+              small
+              text
+              @click="dialogAproveCandidate = false"
+              >Fechar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="dialogDispenseCandidate" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline red--text">Atenção</v-card-title>
+          <v-card-text>
+            Deseja
+            <strong class="red--text"
+              >reprovar o candidato
+              <span class="black--text">{{
+                selectedCandidate.candidateName
+              }}</span></strong
+            >?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              small
+              text
+              @click="dialogDispenseCandidate = false"
+              >Agora não</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              class="white--text"
+              @click="reproveCandidate()"
+              >Sim!</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="dialogCurriculum" persistent>
+        <v-card>
+          <v-card-title class="headline red--text">Curriculum</v-card-title>
+          <v-card-text>
+            <iframe
+              style="width: 100%"
+              height="900px"
+              :src="curriculum"
+            ></iframe>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              small
+              text
+              @click="dialogCurriculum = false"
+              >Fechar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </article>
   </v-container>
 </template>
 <script>
 import { Jobs } from "@/services/jobs.js";
+import { Users } from "@/services/users.js";
 export default {
   props: {
     userData: Object,
@@ -269,6 +568,14 @@ export default {
     job: {},
     dialog: false,
     activeLoading: true,
+    dialogCandidates: false,
+    dialogAproveCandidate: false,
+    dialogCurriculum: false,
+    dialogDispenseCandidate: false,
+    candidatesDetails: {},
+    selectedCandidate: {},
+    curriculum: undefined,
+    aproveText: false,
   }),
   async mounted() {
     console.log("ROUTER");
@@ -301,14 +608,16 @@ export default {
         .changeJobDone(this.job._id, action)
         .then((resp) => {
           this.mainControll.globalLoading = false;
-          this.showSuccessSnackBar(action
-            ? "Vaga encerrada com sucesso!"
-            : "Vaga reaberta para o mercado!");
+          this.showSuccessSnackBar(
+            action
+              ? "Vaga encerrada com sucesso!"
+              : "Vaga reaberta para o mercado!"
+          );
           this.job.done = action;
         })
         .catch((err) => {
           this.mainControll.globalLoading = false;
-          this.showInvalidSnackBar(err.response.data["message"])
+          this.showInvalidSnackBar(err.response.data["message"]);
           console.log(err);
         });
     },
@@ -322,11 +631,109 @@ export default {
       this.mainControll.alert.text = message;
       this.mainControll.alert.show = true;
     },
+    selectCandidate(candidate) {
+      this.aproveText = false;
+      this.selectedCandidate = candidate;
+      this.dialogAproveCandidate = true;
+    },
+    approveCandidate() {
+      const job = new Jobs();
+      this.mainControll.globalLoading = true;
+
+      job
+        .approveCandidateToJob(this.job._id, this.selectedCandidate.candidateId)
+        .then(async (resp) => {
+          await this.findCandidates(this.job._id);
+          this.mainControll.globalLoading = false;
+          this.showSuccessSnackBar(
+            `Candidato ${this.selectedCandidate.candidateName} aprovado!`
+          );
+          this.aproveText = true;
+        })
+        .catch((err) => {
+          this.mainControll.globalLoading = false;
+          console.error(err.response.data.message);
+          this.showInvalidSnackBar(err.response.data.message);
+        });
+    },
+    reproveCandidate() {
+      const job = new Jobs();
+      this.mainControll.globalLoading = true;
+
+      job
+        .repproveCandidateToJob(
+          this.job._id,
+          this.selectedCandidate.candidateId
+        )
+        .then(async (resp) => {
+          await this.findCandidates(this.job._id);
+          this.dialogDispenseCandidate = false;
+          this.mainControll.globalLoading = false;
+          this.showSuccessSnackBar(
+            `Candidato ${this.selectedCandidate.candidateName} reprovado!`
+          );
+          this.aproveText = true;
+        })
+        .catch((err) => {
+          this.dialogDispenseCandidate = false;
+          this.mainControll.globalLoading = false;
+          console.error(err.response.data.message);
+          this.showInvalidSnackBar(err.response.data.message);
+        });
+    },
+    selectToDispenseCandidate(candidate) {
+      this.selectedCandidate = candidate;
+      this.dialogDispenseCandidate = true;
+    },
+    visualizeCurriculum(candidate) {
+      const service = new Users();
+      this.mainControll.globalLoading = true;
+      service
+        .findUserById(candidate.candidateId)
+        .then((resp) => {
+          if (resp.data && resp.data.curriculum) {
+            this.mainControll.globalLoading = false;
+            this.curriculum = `data:application/pdf;base64,${resp.data.curriculum}`;
+            this.dialogCurriculum = true;
+          } else {
+            this.mainControll.globalLoading = false;
+            this.showInvalidSnackBar(
+              "Candidato não possui curriculum cadastrado"
+            );
+          }
+        })
+        .catch((err) => {
+          this.mainControll.globalLoading = false;
+          console.error(err);
+          this.showInvalidSnackBar("Não foi possível visualizar curriculo");
+          this.dialogCurriculum = false;
+        });
+    },
+    findCandidates(jobId) {
+      const job = new Jobs();
+      this.mainControll.globalLoading = true;
+      job
+        .getCandidatesInJob(jobId)
+        .then((resp) => {
+          this.candidatesDetails = resp.data;
+          this.dialogCandidates = true;
+          this.mainControll.globalLoading = false;
+        })
+        .catch((err) => {
+          this.candidatesDetails = {};
+          this.mainControll.globalLoading = false;
+          console.error(err);
+          this.showInvalidSnackBar(
+            "Não foi possível visualizar detalhes dos candidatos"
+          );
+        });
+    },
   },
   watch: {
     dialog: function (newVal, oldVal) {
       // this.selected = {};
     },
+    dialogCandidates: function (newVal, oldVal) {},
   },
 };
 </script>
@@ -352,5 +759,27 @@ export default {
   border: 1px solid lightslategray;
   border-top: none;
   border-radius: 0px 0px 4px 4px;
+}
+
+.base {
+  text-align: center;
+  width: 100%;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.approved {
+  background-color: #6fb36f85;
+  color: #015a01;
+}
+
+.repproved {
+  color: #5f0000;
+  background-color: #ff00004a;
+}
+
+.neutral {
+  color: #000000;
+  background-color: #9c99994a;
 }
 </style>

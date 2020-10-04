@@ -39,4 +39,16 @@ export class Jobs extends BaseApi {
             `${this.jobUri}/company/${companyId}`
         )
     }
+
+    async getCandidatesInJob(jobId){
+        return axios.get(`${this.jobUri}/${jobId}/candidates/`)
+    }
+
+    async approveCandidateToJob(jobId, candidateId){
+        return axios.post(`${this.jobUri}/${jobId}/approve/${candidateId}`)
+    }
+
+    async repproveCandidateToJob(jobId, candidateId){
+        return axios.post(`${this.jobUri}/${jobId}/repprove/${candidateId}`)
+    }
 }
