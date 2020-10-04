@@ -125,12 +125,12 @@
           v-for="(question, index) in questions"
           :key="question.questionId._id"
         >
-          <v-stepper-content :step="index">
+          <v-stepper-content :step="index" style="overflow:scroll">
             <strong style="font-size: 1.2em">{{
               question.questionId.description
             }}</strong>
 
-            <v-card class="mb-12" color="grey lighten-3" height="200px">
+            <v-card class="mb-12" color="grey lighten-3" height="200px" style="overflow:scroll">
               <ul class="pa-5 ml-5" style="cursor: pointer">
                 <li
                   style="

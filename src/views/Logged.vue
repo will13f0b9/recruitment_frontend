@@ -171,7 +171,6 @@ export default {
         this.$router.push("/");
         this.mainControll.showLoginDialog = true;
         this.mainControll.registerTab = false;
-        debugger;
         this.mainControll.dashInfo = Object.assign({}, {});
         this.mainControll.userData = Object.assign({}, {});
         this.mainControll.company = Object.assign({}, {});
