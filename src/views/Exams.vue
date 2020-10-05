@@ -106,7 +106,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-stepper-header>
+      <v-stepper-header  v-if="!dataOfDone">
         <article v-for="(question, index) in questions" :key="question._id">
           <v-stepper-step
             color="cyan"
@@ -121,11 +121,7 @@
       </v-stepper-header>
 
       <v-stepper-items>
-        <article
-          v-for="(question, index) in questions"
-          :key="question.questionId._id"
-        >
-          <v-stepper-content :step="index" style="overflow:scroll">
+          <v-stepper-content  v-for="(question, index) in questions" :step="`${index}`" :key="`${index}-content`" style="overflow:scroll">
             <strong style="font-size: 1.2em">{{
               question.questionId.description
             }}</strong>
@@ -189,13 +185,12 @@
             >
           </v-stepper-content>
           <v-divider></v-divider>
-        </article>
       </v-stepper-items>
       <v-btn
         block
         x-large
         color="teal"
-        :disabled="questions.length == 0 ? true : false"
+        :disabled="(questions.length == 0 ? true : false) || dataOfDone"
         :outlined="!(totalHits == questions.length)"
         @click="dialogDoneExam = true"
       >
