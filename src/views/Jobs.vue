@@ -16,6 +16,25 @@
         (company && company['companyId'])
       "
     >
+      <v-btn
+        v-if="company && company.companyId"
+        block
+        dark
+        color="cyan"
+        x-large
+        @click="
+          $router.push(
+            `/jobs/create/company/${company.companyId}/recruiter/${
+              userData && userData.userId ? userData.userId : company.companyId
+            }`
+          )
+        "
+      >
+        <v-icon color="white" class="mr-2" style="cursor: pointer"
+          >mdi-plus-circle</v-icon
+        >
+        CADASTRAR NOVA VAGA
+      </v-btn>
       <v-toolbar color="amber darken-4" dark>
         <v-toolbar-title
           >Vagas
@@ -65,7 +84,7 @@
                         v-text="item.title"
                       ></v-list-item-title>
                     </v-col>
-                    <v-col cols="12" md="2" sm="6" offset-md="4">
+                    <v-col cols="12" md="4" sm="12" offset-md="4">
                       <!-- <span v-for="skill in item.requiredSkills" :key="skill">{{skill}}</span> -->
                       <v-chip
                         v-for="skill in item.requiredSkills"
@@ -264,13 +283,15 @@ export default {
           this.allJobs = [...this.items];
         }
         console.log(this.allJobs.length);
-        this.items = [...this.applyAndGetOnlyFilteredData(this.allJobs, search)];
+        this.items = [
+          ...this.applyAndGetOnlyFilteredData(this.allJobs, search),
+        ];
       }
     },
     applyAndGetOnlyFilteredData(items, search, filter) {
       if (!search) {
         return items;
-      } 
+      }
 
       function new_filter(val, search) {
         return (
@@ -289,7 +310,7 @@ export default {
         .toLowerCase()
         .split(" ")
         .filter((x) => x);
-      
+
       return items.filter((row) =>
         needleAry.every((needle) =>
           Object.keys(row).some((key) => new_filter(row[key], needle))

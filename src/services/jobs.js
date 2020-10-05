@@ -41,6 +41,14 @@ export class Jobs extends BaseApi {
         )
     }
 
+
+    async createJob(data) {
+        return axios.post(
+            `${this.jobUri}/`,
+            data
+        )
+    }
+
     async getDashFromCompanyJobs(companyId) {
         return axios.get(
             `${this.jobUri}/company/${companyId}`

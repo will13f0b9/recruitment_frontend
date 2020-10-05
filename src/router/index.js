@@ -76,6 +76,13 @@ export const routes = [
     component: () => import('@/views/EditJob.vue'),
     logged: true,
     hidden: true
+  },
+  {
+    path: '/jobs/create/company/:id/recruiter/:userId',
+    name: 'Cadastrar nova Vaga',
+    component: () => import('@/views/CreateJob.vue'),
+    logged: true,
+    hidden: true
   }
 ]
 

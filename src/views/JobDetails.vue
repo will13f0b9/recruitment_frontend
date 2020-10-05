@@ -22,18 +22,21 @@
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <h2 class="white--text text-center">{{ job.title }}</h2>
-          <v-divider class="mr-2" style="background-color: white;border: 1px solid white;"/>
-          <v-btn
-            v-if="company && company.hasOwnProperty('companyId')"
-            @click="$router.push('/jobs/edit/' + $router.currentRoute.params.id)"
-            class="white--text"
-            text
-            block
-            small
-          >
-            <v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> Editar vaga
-          </v-btn>
-        
+          <article class="mr-4 mb-2">
+            <v-btn
+              v-if="company && company.hasOwnProperty('companyId')"
+              @click="
+                $router.push('/jobs/edit/' + $router.currentRoute.params.id)
+              "
+              class="black--text mr-4"
+              color="white"
+              block
+              small
+            >
+              <v-icon class="mr-2">mdi-clipboard-edit-outline</v-icon> Editar
+              vaga
+            </v-btn>
+          </article>
         </v-col>
       </v-row>
       <v-divider />
