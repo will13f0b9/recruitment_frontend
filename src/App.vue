@@ -9,8 +9,8 @@
       </template>
     </v-snackbar>
     <Login :mainControll="mainControll"></Login>
-    <v-col v-if="mainControll.globalLoading" class="global-loading" cols="12">
-      <v-row align="center" justify="center" style="height: 80vh">
+    <v-col v-if="mainControll.globalLoading" class="global-loading" cols="12" style="position: fixed; display: flex;">
+      <v-row align="center" justify="center">
         <div>
           <h1>Carregando...</h1>
           <br />

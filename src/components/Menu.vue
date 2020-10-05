@@ -11,13 +11,14 @@
           <span
             style="cursor: pointer"
             class="title ml-1 mr-5"
-            @click="$router.push('/')"
+            @click="!userData.hasOwnProperty('companyId') ? userData.profiles.indexOf('CANDIDATE') != -1 ? $router.push('/candidate') : $router.push('/recruiter') : $router.push('/company')"
           >
             <v-avatar>
               <img
                 class="avatar"
                 src="@/assets/VagaCertaIconInvertido.png"
                 alt="Icon Vaga Certa"
+                style
               />
             </v-avatar>
             <span v-if="drawer" class="mt-2 tracking-in-expand">

@@ -1,6 +1,7 @@
 
 import { BaseApi } from "./base"
 import * as axios from 'axios';
+import RemoveSpecialCharacters from "../util/remove-special-characters";
 
 export class Users extends BaseApi {
     constructor() {
@@ -9,10 +10,13 @@ export class Users extends BaseApi {
     }
 
     async editUSer(id, params) {
+        console.log("params", params)
+        params.cpf = RemoveSpecialCharacters(params.cpf);
         return axios.patch(`${this.cUri}/${id}`, params)
     }
 
     async create(params) {
+        params.cpf = RemoveSpecialCharacters(params.cpf);
         return axios.post(`${this.cUri}`, params)
     }
 

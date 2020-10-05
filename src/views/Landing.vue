@@ -39,8 +39,8 @@
         <v-btn block @click="openLoginDialog">Login</v-btn>
         <v-btn block @click="openRegisterDialog">Cadastro</v-btn>
       </div>
-      <h1 class="wallpaper-title">MELHORES SOLUÇÕES DE RECRUTAMENTO PARA EMPRESAS E CANDIDATOS</h1>
-      <h2 class="wallpaper-description">Venha agora fazer parte!</h2>
+      <h1 class="wallpaper-title">Ache a Vaga Certa!</h1>
+      <h2 class="wallpaper-description">A Vaga Certa é uma plataforma de recrutamento que facilita a demonstração de conhecimento através de exames tecnológicos, possibilitando os candidatos a mostrarem o máximo de seus potenciais e as empresas a escolherem os melhores do mercado. </h2>
       <div class="button-bar-know-more-contact">
         <a href="#contacts"><button class="contact">Entre em Contato</button></a>
       </div>

@@ -102,6 +102,7 @@
                     label="CNPJ"
                     clearable
                     required
+                    v-mask="'##.###.###/####-##'"
                   ></v-text-field>
 
                   <v-text-field
@@ -169,6 +170,7 @@
                     clearable
                     :rules="cpfRules"
                     required
+                    v-mask="'###.###.###-##'"
                   ></v-text-field>
 
                   <v-text-field
@@ -252,6 +254,7 @@
                     :rules="cnpjRules"
                     clearable
                     required
+                    v-mask="'##.###.###/####-##'"
                   ></v-text-field>
 
                   <v-text-field
@@ -371,6 +374,8 @@
 <script>
 import { Users } from "@/services/users.js";
 import { Companies } from "@/services/companies.js";
+import RemoveSpecialCharacters from '@/util/remove-special-characters.js';
+
 export default {
   props: {
     mainControll: Object,
@@ -562,7 +567,8 @@ export default {
       const user = new Users();
       let data = { password: this.loginForm.password };
       if (this.loginForm.companyForm) {
-        data["cnpj"] = this.loginForm.cnpj;
+        data["cnpj"] = RemoveSpecialCharacters(this.loginForm.cnpj);
+        
       } else {
         data["email"] = this.loginForm.email;
       }
@@ -576,6 +582,7 @@ export default {
         await user
           .authenticate(data)
           .then((success) => {
+            console.log("success", success)
             this.mainControll.globalLoading = false;
             if (!success.data.hasOwnProperty("companyId")) {
               this.mainControll.userData = success.data.userInfo;
@@ -631,7 +638,7 @@ export default {
           });
         }
 
-        data["cnpj"] = this.registerForm.cnpj;
+        data["cnpj"] = RemoveSpecialCharacters(this.registerForm.cnpj);
         data["name"] = this.registerForm.companyName;
         data["description"] = this.registerForm.companyDescription;
         data["email"] = this.registerForm.email;
@@ -655,7 +662,7 @@ export default {
             });
         }
 
-        data["cpf"] = this.registerForm.cpf;
+        data["cpf"] = RemoveSpecialCharacters(this.registerForm.cpf);
         data["name"] = this.registerForm.userName;
         data["description"] = this.registerForm.userDescription;
         data["email"] = this.registerForm.email;

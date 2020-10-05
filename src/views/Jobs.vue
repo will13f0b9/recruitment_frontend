@@ -23,7 +23,15 @@
         >
 
         <v-spacer></v-spacer>
-
+         <v-btn
+            outlined
+            small
+            class="mt-4 mr-4"
+            @click="
+              $router.push('/jobs/profile')
+            "
+          >Nova Vaga
+         </v-btn>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"

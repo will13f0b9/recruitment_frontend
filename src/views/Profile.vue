@@ -32,6 +32,7 @@
                   clearable
                   label="CPF"
                   :rules="cpfRules"
+                  v-mask="'###.###.###-##'"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
@@ -126,6 +127,7 @@
                   clearable
                   label="CNPJ"
                   :disabled="true"
+                  v-mask="'##.###.###/####-##'"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">

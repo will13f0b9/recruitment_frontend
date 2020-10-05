@@ -30,6 +30,9 @@
                 itemsPerPageText: 'Total de páginas',
               }"
             >
+              <template v-slot:item.cpf="{item}">
+                {{item.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}}
+              </template>
               <template v-slot:item.totalJobsActived="{ item }">
                 <v-chip small :color="getColor(item.totalJobsActived)" dark>{{
                   item.totalJobsActived
@@ -83,6 +86,7 @@
                                   v-model="editedItem.cpf"
                                   :rules="cpfRules"
                                   label="Cpf do recrutador"
+                                  v-mask="'###.###.###-##'"
                                 ></v-text-field>
                               </v-col>
                               <v-col cols="12" sm="6" md="4">
@@ -183,6 +187,7 @@
 <script>
 import { Users } from "@/services/users.js";
 import Menu from "@/components/Menu.vue";
+import RemoveSpecialCharacters from '@/util/remove-special-characters.js'
 export default {
   props: {
     userData: Object,
@@ -450,6 +455,7 @@ export default {
     async editDate() {
       const users = new Users();
       const data = this.desserts[this.editedIndex];
+      data.cpf = RemoveSpecialCharacters(data.cpf);
       console.log(this.editedIndex);
       if (data) {
         users
