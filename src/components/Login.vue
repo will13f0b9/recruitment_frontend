@@ -582,7 +582,6 @@ export default {
         await user
           .authenticate(data)
           .then((success) => {
-            console.log("success", success)
             this.mainControll.globalLoading = false;
             if (!success.data.hasOwnProperty("companyId")) {
               this.mainControll.userData = success.data.userInfo;
@@ -683,7 +682,6 @@ export default {
         await service
           .create(data)
           .then(async (success) => {
-            console.log(success);
             const user = new Users();
             const authData = { password: data.password };
             if (this.loginForm.companyForm) {
