@@ -110,13 +110,13 @@
             v-else-if="!item.disable"
             :key="i"
             link
+            @click="moveToRoute(item, profile)"
           >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title
-                @click="moveToRoute(item, profile)"
                 class="grey--text"
                 >{{ item.text }}</v-list-item-title
               >
@@ -165,9 +165,8 @@
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
-            <v-list-item-content>
+            <v-list-item-content  @click="moveToRoute(item, profile)">
               <v-list-item-title
-                @click="moveToRoute(item, profile)"
                 class="grey--text"
                 >{{ item.text }}</v-list-item-title
               >
