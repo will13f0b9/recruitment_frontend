@@ -34,6 +34,13 @@ export class Jobs extends BaseApi {
         )
     }
 
+    async changeJobData(id, data) {
+        return axios.patch(
+            `${this.jobUri}/${id}`,
+            data
+        )
+    }
+
     async getDashFromCompanyJobs(companyId) {
         return axios.get(
             `${this.jobUri}/company/${companyId}`

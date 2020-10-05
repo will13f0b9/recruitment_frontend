@@ -70,6 +70,13 @@ export const routes = [
     logged: true,
     hidden: true
   },
+  {
+    path: '/jobs/edit/:id',
+    name: 'Editar Vaga',
+    component: () => import('@/views/EditJob.vue'),
+    logged: true,
+    hidden: true
+  }
 ]
 
 const router = new VueRouter({

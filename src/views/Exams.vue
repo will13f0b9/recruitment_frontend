@@ -339,10 +339,8 @@ export default {
         }
       })
       .catch((err) => {
-        if (err.response.status) {
-          this.successSnackBar(
-            err.response.data.message +
-              "... Estamos buscando as informações do exame"
+        if (err.response.status == 404) {
+          this.successSnackBar("Estamos buscando as informações do exame"
           );
           exam
             .examOfUser(jobId, candidateId)
