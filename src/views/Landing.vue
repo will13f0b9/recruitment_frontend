@@ -79,7 +79,7 @@
             </li>
             <li class="card-advantages-item">
               <v-icon>mdi-check</v-icon>
-              Faça Exames Certificadores
+              Mostre todo seu potencial através de exames tecnológicos
             </li>
           </ul>
         </div>

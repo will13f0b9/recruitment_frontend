@@ -190,7 +190,7 @@
         block
         x-large
         color="teal"
-        :disabled="(questions.length == 0 ? true : false) || dataOfDone"
+        :disabled="(questions.length == 0 ? true : false) || dataOfDone || questions.some(question => !questionId.aswer)"
         :outlined="!(totalHits == questions.length)"
         @click="dialogDoneExam = true"
       >
