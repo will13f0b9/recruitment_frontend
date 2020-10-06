@@ -185,7 +185,6 @@
             >
           </v-stepper-content>
           <v-divider></v-divider>
-      </v-stepper-items>
       <v-btn
         block
         x-large
@@ -196,6 +195,7 @@
       >
         Finalizar Exame
       </v-btn>
+      </v-stepper-items>
     </v-stepper>
     <v-dialog v-model="dialogDoneExam" persistent max-width="600">
       <v-card>
@@ -464,4 +464,5 @@ export default {
   color: #000000;
   background-color: #9c99994a;
 }
+
 </style>

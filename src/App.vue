@@ -70,6 +70,9 @@ export default {
   box-sizing: border-box;
   outline: 0;
 }
+.v-stepper__header{
+  height: unset!important;
+}
 /* .v-main__wrap::after {
   content: "";
   position: absolute;
