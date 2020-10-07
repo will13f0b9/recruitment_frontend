@@ -112,6 +112,7 @@
 
         </div>
         <button @click="openRegisterDialog">Assinar Plano</button>
+        <span v-if="plan.benefits.some(benefits => benefits.includes('*'))" style="font-size: 12px">* Disponível somente durante o primeiro mês</span>
       </div>
     </div>
 
