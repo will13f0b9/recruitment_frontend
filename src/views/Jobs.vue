@@ -4,6 +4,7 @@
     <v-card
       class="mx-auto"
       elevation="4"
+      style="box-shadow: unset !important"
       v-if="
         (userData &&
           userData['profiles'] &&
@@ -64,11 +65,10 @@
         <v-list-item-group v-model="selected">
            <v-row>
              <v-col align="end">
-                  <span style="padding: 0 16px;">{{items.length}} vagas cadastradas</span>
+                  <span style=" display: block; padding: 0 16px 4px 16px; border-bottom: 1px solid #eee">{{items.length}} vagas cadastradas</span>
               </v-col>
             </v-row>
           <template v-for="item in items">
-            <v-divider :key="item._id" />
             <v-list-item
               :key="item.title"
               :class="
@@ -79,6 +79,7 @@
                   ? 'green lighten-5'
                   : ''
               "
+              class="card-job"
             >
               <template v-slot:default="{}">
                 <v-list-item-content @click="$router.push('/jobs/' + item._id)">
@@ -369,5 +370,12 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.card-job {
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+.card-job + .card-job {
+  margin: 16px 0;
 }
 </style>

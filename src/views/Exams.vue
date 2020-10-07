@@ -106,7 +106,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-stepper-header>
+      <v-stepper-header v-if="!dataOfDone">
         <article v-for="(question, index) in questions" :key="question._id">
           <v-stepper-step
             color="cyan"
