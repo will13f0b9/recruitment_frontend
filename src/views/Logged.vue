@@ -271,7 +271,7 @@ button {
 
 .vue-alert {
   background: #ffff2c !important;
-  position: fixed;
+  position: fixed !important;
   top: 70px;
   z-index: 1;
   right: 52px;
