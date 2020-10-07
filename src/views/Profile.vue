@@ -53,7 +53,6 @@
                   :auto-grow="true"
                   :value="user.description"
                   v-model="user.description"
-                  :rules="descRules"
                   :counter="50"
                 ></v-textarea>
               </v-col>
