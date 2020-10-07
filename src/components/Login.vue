@@ -189,24 +189,13 @@
                     label="Sexo"
                   ></v-select>
 
-                  <v-textarea
-                    label="Descrição do perfil"
-                    rows="1"
-                    clearable
-                    :auto-grow="true"
-                    :value="registerForm.description"
-                    v-model="registerForm.userDescription"
-                    :rules="descRules"
-                    :counter="50"
-                  ></v-textarea>
-
                   <v-text-field
                     v-model="registerForm.password"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :rules="passwordRules"
                     :type="showPassword ? 'text' : 'password'"
                     name="input-10-2"
-                    label="Password"
+                    label="Cadastrar senha"
                     clearable
                     value=""
                     class="input-group--focused"
