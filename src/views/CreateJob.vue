@@ -339,7 +339,7 @@
               <v-col cols="12" sm="12" md="4">
                 <v-combobox
                   v-model="editedExamConfig.skill"
-                  :items="benefitis"
+                  :items="skills"
                   :disabled="action != -1"
                   chips
                   label="Habilidades Desejáveis"
