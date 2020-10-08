@@ -13,7 +13,7 @@
       elevation="2"
       colored-border
       icon="mdi-alert"
-      class="mb-0"
+      class="mb-0 vue-alert"
     >
       Faça
       <strong>upload</strong> do seu <strong>currículo</strong> para se
@@ -269,6 +269,17 @@ button {
   animation: rotate-90-cw 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 }
 
+.vue-alert {
+  background: #ffff2c !important;
+  position: fixed !important;
+  top: 70px;
+  z-index: 1;
+  right: 52px;
+}
+
+.v-application .vue-alert i.yellow--text {
+  color: white !important;
+}
 @-webkit-keyframes rotate-90-cw {
   0% {
     -webkit-transform: rotate(0);
@@ -288,5 +299,14 @@ button {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+
+@media (max-width: 768px) {
+  .vue-alert {
+    right: 52px;
+    left: 12px;
+    right: 12px;
+  }
+  
 }
 </style>

@@ -165,6 +165,36 @@
                       :rules="descriptionRules"
                     ></v-textarea>
                   </v-col>
+                   <v-col cols="12" sm="12" md="12">
+                    <v-combobox
+                      v-model="job.benefits"
+                      :items="benefits"
+                      chips
+                      :rules="requiredListField"
+                      label="Benefícios"
+                      multiple
+                      clearable
+                      hint="Digite e aperte enter para cadastrar uma nova opção"
+                      persistent-hint
+                    >
+                      <template v-slot:selection="data">
+                        <v-chip
+                          :key="JSON.stringify(data.item)"
+                          :input-value="data.selected"
+                          :disabled="data.disabled"
+                          class="v-chip--select-multi"
+                          @click.stop="data.parent.selectedIndex = data.index"
+                          @input="data.parent.selectItem(data.item)"
+                        >
+                          <v-avatar class="accent white--text mr-2">
+                            {{ data.item.substring(0, 1).toUpperCase() }}
+                            <!-- {{ data.item.slice(0, 1).toUpperCase() }} -->
+                          </v-avatar>
+                          {{ data.item }}
+                        </v-chip>
+                      </template>
+                    </v-combobox>
+                  </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <v-textarea
                       label="Outras informações"
@@ -375,6 +405,7 @@ export default {
   },
   data: () => ({
     skills: ["SQL", "JAVA", "PYTHON", "LOGIC", "ORACLE", "NODE", "JAVASCRIPT"],
+    benefits: ['Vale Refeição',  'Vale Alimentação', 'Estacionamento', 'Horário Flexível', 'PLR', 'Seguro de Vida'],
     user: {},
     companyData: {},
     dialog: false,

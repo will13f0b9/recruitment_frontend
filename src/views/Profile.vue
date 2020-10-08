@@ -53,7 +53,6 @@
                   :auto-grow="true"
                   :value="user.description"
                   v-model="user.description"
-                  :rules="descRules"
                   :counter="50"
                 ></v-textarea>
               </v-col>
@@ -192,6 +191,8 @@
 import Menu from "@/components/Menu.vue";
 import { Users } from "@/services/users.js";
 import { Companies } from "@/services/companies.js";
+import RemoveSpecialCharacters from "../util/remove-special-characters";
+
 export default {
   props: {
     userData: Object,
@@ -423,7 +424,7 @@ export default {
             console.log(success);
             this.company.name = success.data.name;
             this.company.email = success.data.email;
-            this.company.cnpj = success.data.cnpj;
+            this.company.cnpj = RemoveSpecialCharacters(success.data.cnpj);
             this.company.plan = success.data.plan;
             this.company.description = success.data.description;
             this.companyData = Object.assign({}, this.company);

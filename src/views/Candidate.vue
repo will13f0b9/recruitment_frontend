@@ -3,8 +3,8 @@
     <v-container>
       <v-row no-gutters>
         <v-col cols="12" sm="12" md="12">
-          <v-card elevation="4" class="mx-auto mx-auto mt-2" outlined>
-            <v-row justify="space-around">
+          <v-card elevation="4" class="mx-auto mx-auto mt-2" style="box-shadow: unset !important">
+            <v-row justify="space-around" style="box-shadow: 0 0 4px rgba(0,0,0,0.2); margin: 0">
               <v-col>
                 <div class="ml-4 mt-2 mb-2 font-weight-bold h1">
                   Candidaturas Recentes
@@ -18,9 +18,8 @@
               </v-col>
             </v-row>
 
-            <v-list-item v-for="job in dashInfo.jobs" :key="job.id" three-line>
+            <v-list-item v-for="job in dashInfo.jobs" :key="job.id" three-line class="card-job">
               <v-list-item-content style="padding: 0">
-                <v-divider />
                 <v-container>
                   <v-row no-gutters>
                     <v-col cols="12" sm="12" md="12">
@@ -160,6 +159,8 @@ export default {
   width: 100%;
   font-weight: bold;
   padding: 2px;
+  border-radius: 4px;
+  margin-bottom: 8px;
 }
 
 .approved {
@@ -175,5 +176,13 @@ export default {
 .neutral {
   color: #000000;
   background-color: #9c99994a;
+}
+
+.card-job {
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-job {
+  margin: 16px 0;
 }
 </style>

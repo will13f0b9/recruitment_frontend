@@ -76,18 +76,6 @@
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
         <h4 style="font-weight: 500">{{ userData.name }}</h4>
-        <h5
-          style="
-            color: grey;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          "
-        >
-          {{ userData.description }}
-        </h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">

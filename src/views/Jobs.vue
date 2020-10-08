@@ -4,6 +4,7 @@
     <v-card
       class="mx-auto"
       elevation="4"
+      style="box-shadow: unset !important"
       v-if="
         (userData &&
           userData['profiles'] &&
@@ -42,15 +43,7 @@
         >
 
         <v-spacer></v-spacer>
-         <v-btn
-            outlined
-            small
-            class="mt-4 mr-4"
-            @click="
-              $router.push('/jobs/profile')
-            "
-          >Nova Vaga
-         </v-btn>
+         
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -68,9 +61,14 @@
         height="5"
       ></v-progress-linear>
       <v-list two-line>
+       
         <v-list-item-group v-model="selected">
+           <v-row>
+             <v-col align="end">
+                  <span style=" display: block; padding: 0 16px 4px 16px; border-bottom: 1px solid #eee">{{items.length}} vagas cadastradas</span>
+              </v-col>
+            </v-row>
           <template v-for="item in items">
-            <v-divider :key="item._id" />
             <v-list-item
               :key="item.title"
               :class="
@@ -81,6 +79,7 @@
                   ? 'green lighten-5'
                   : ''
               "
+              class="card-job"
             >
               <template v-slot:default="{}">
                 <v-list-item-content @click="$router.push('/jobs/' + item._id)">
@@ -170,6 +169,33 @@
                   </v-row>
 
                   <div class="ellipse" v-text="item.description"></div>
+                  
+                  <div v-if="item.benefits && item.benefits.length > 0" style="margin-top: 24px;">
+                    <v-row no-gutters>
+                      <v-col cols="12" >
+                        <span style="font-weight: bold; color: #234">Benefícios:</span>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-chip
+                        v-for="benefits in item.benefits"
+                        :key="benefits"
+                        class="ma-1 font-wight-black font-weight-black white--text"
+                        small
+                        :color="`#${((Math.random() * 0xffffff) << 0).toString(16)}`"
+                        label
+                        >{{ benefits }}</v-chip
+                      >
+                    </v-row>
+                  </div>
+                   
+                   <v-row style="margin-top: 12px; font-weight: bold; color: #234" >
+                      <v-col cols="12" >
+                        <span v-if="item.examConfig.length > 0">Possui exames obrigatórios ao se candidatar</span>
+                        <span v-else>Não possui exames</span>
+                      </v-col>
+                    </v-row>
+                  
                   <v-row
                     no-gutters
                     :align="'center'"
@@ -245,7 +271,7 @@ export default {
       .then((success) => {
         this.companyId = companyId;
         this.items = success.data.items;
-        console.log(success);
+        console.log('success items', success);
         this.activeLoading = false;
       })
       .catch((err) => {
@@ -344,5 +370,12 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.card-job {
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+.card-job + .card-job {
+  margin: 16px 0;
 }
 </style>

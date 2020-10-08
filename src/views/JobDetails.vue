@@ -214,6 +214,12 @@
               <span v-else>-</span>
             </v-col>
           </v-row>
+          <v-row style="font-weight: bold; color: #234" justify="start" class="ml-2">
+            <v-col>
+              <span v-if="job.examConfig.length > 0">Possui exames obrigatórios ao se candidatar</span>
+              <span v-else>Nâo possui exames</span>
+            </v-col>
+          </v-row>
         </article>
         <v-btn
           x-large
@@ -624,6 +630,7 @@ export default {
       .then((success) => {
         this.job = success.data;
         this.activeLoading = false;
+        console.log("jobson", success.data)
       })
       .catch((err) => {
         this.job = {};

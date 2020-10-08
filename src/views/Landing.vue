@@ -1,19 +1,4 @@
 <template>
-  <!--<div v-ripple class="main text-center elevation-2 pa-12 headline">
-    <img style="width: 80%; heigth: 100vh;" alt="Vue logo" src="../assets/vaga-certa-logo.b1818157.png" />
-    <v-content>
-      <v-row>
-        <!-- <v-col cols="12" v-for="route in routes" :key="route">
-          <v-btn block v-if="!route.hidden" @click="$router.push(route.path)" class="ma-2" outlined color="teal" dark>{{route.name}}</v-btn>
-        </v-col> -->
-<!--        <v-col cols="12">
-          <v-btn block @click="openLoginDialog" class="ma-2" color="teal" dark>Logar</v-btn>
-          <v-btn block @click="openRegisterDialog" class="ma-2" color="teal" dark>Registrar</v-btn>
-        </v-col>
-      </v-row>
-    </v-content>
-  </div> -->
-
   <div id="home">
     <div class="contact-header">
       <div style=" display: flex; align-items: center;">
@@ -79,7 +64,7 @@
             </li>
             <li class="card-advantages-item">
               <v-icon>mdi-check</v-icon>
-              Faça Exames Certificadores
+              Mostre todo seu potencial através de exames tecnológicos
             </li>
           </ul>
         </div>
@@ -90,7 +75,7 @@
 
     <div class="box-plans-for-companies" id="companies">
       <span class="box-plans-for-companies-title">Para Empresas</span>
-       <div class="card-advantages-wrapper" v-for="plan in mainControll.plans" :key="plan.id">
+       <div class="card-advantages-wrapper" v-for="plan in mainControll.plans.sort((a, b) => a.price > b.price ? 1 : a.price < b.price ? -1 : 0 )" :key="plan.id">
         <div style="display: flex; flex-direction: column; align-items: center;">
           <h1 class="card-advantages-wrapper-title">{{plan.name}}</h1>
           <span class="card-advantages-wrapper-description">{{plan.description}}</span>
@@ -112,6 +97,7 @@
 
         </div>
         <button @click="openRegisterDialog">Assinar Plano</button>
+        <span v-if="plan.benefits.some(benefits => benefits.includes('*'))" style="font-size: 12px">* Disponível somente durante o primeiro mês</span>
       </div>
     </div>
 
