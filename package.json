@@ -1,6 +1,6 @@
 {
   "name": "vaga_certa",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "postinstall": "npm run build",
