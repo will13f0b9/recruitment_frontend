@@ -75,7 +75,7 @@
 
     <div class="box-plans-for-companies" id="companies">
       <span class="box-plans-for-companies-title">Para Empresas</span>
-       <div class="card-advantages-wrapper" v-for="plan in mainControll" :key="plan.id">
+       <div class="card-advantages-wrapper" v-for="plan in mainControll.plans" :key="plan.id">
         <div style="display: flex; flex-direction: column; align-items: center;">
           <h1 class="card-advantages-wrapper-title">{{plan.name}}</h1>
           <span class="card-advantages-wrapper-description">{{plan.description}}</span>
