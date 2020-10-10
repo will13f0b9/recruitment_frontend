@@ -55,7 +55,7 @@ export default {
     await companie
       .getPlans()
       .then((resp) => {
-        this.mainControll.plans = resp.data.items;
+          this.mainControll.plans = resp.data.items ? resp.data.items.sort((a, b) => a.price > b.price ? 1 : a.price < b.price ? -1 : 0 ) : [];
       })
       .catch((err) => {
         this.mainControll.plans = [];
