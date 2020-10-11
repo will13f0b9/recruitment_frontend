@@ -62,10 +62,10 @@
       ></v-progress-linear>
       <v-list two-line>
        
-        <v-list-item-group v-model="selected">
+        <v-list-item-group v-if="!activeLoading" v-model="selected">
            <v-row>
              <v-col align="end">
-                  <span style=" display: block; padding: 0 16px 4px 16px; border-bottom: 1px solid #eee">{{items.length}} vagas cadastradas</span>
+                  <span style=" display: block; padding: 0 16px 4px 16px; border-bottom: 1px solid #eee">{{items ? items.length : 0}} vagas cadastradas</span>
               </v-col>
             </v-row>
           <template v-for="item in items">

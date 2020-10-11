@@ -56,6 +56,19 @@
                   :counter="50"
                 ></v-textarea>
               </v-col>
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showPassword ? 'text' : 'password'"
+                  name="input-10-2"
+                  label="Alterar senha"
+                  clearable
+                  value=""
+                  v-model="user.password"
+                  class="input-group--focused"
+                  @click:append="showPassword = !showPassword"
+                ></v-text-field>
+              </v-col>
             </v-row>
             <v-divider />
             <v-row v-if="userData.profiles.indexOf('CANDIDATE') != -1">
@@ -142,34 +155,47 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12" sm="12" md="12">
-                 <v-select
-                    v-model="companyData.plan"
-                    class="mt-4 custom-v-select"
-                    :items="mainControll.plans"
-                    item-value="_id"
-                    item-text="name"
-                    no-data-text="Sem dados de empresa"
-                    label="Plano"
-                    hint="Todos planos tem 7 dias gratis para teste!"
-                    persistent-hint
-                  >
-                    <template slot="selection" slot-scope="data">
-                      <strong class="ml-2">{{ data.item.name }}</strong>
-                    </template>
-                    <template slot="item" slot-scope="data">
-                      <div>
-                        <div class="text--grey font-weight-bold">
-                          <v-icon color="teal darken-2" class="mr-4">
-                            mdi-handshake
-                          </v-icon>
-                          <strong>{{ data.item.name }}</strong>
-                        </div>
-                        <small style="color: grey">{{
-                          data.item.description
-                        }}</small>
+                <v-select
+                  v-model="companyData.plan"
+                  class="mt-4 custom-v-select"
+                  :items="mainControll.plans"
+                  item-value="_id"
+                  item-text="name"
+                  no-data-text="Sem dados de empresa"
+                  label="Plano"
+                  hint="Todos planos tem 7 dias gratis para teste!"
+                  persistent-hint
+                >
+                  <template slot="selection" slot-scope="data">
+                    <strong class="ml-2">{{ data.item.name }}</strong>
+                  </template>
+                  <template slot="item" slot-scope="data">
+                    <div>
+                      <div class="text--grey font-weight-bold">
+                        <v-icon color="teal darken-2" class="mr-4">
+                          mdi-handshake
+                        </v-icon>
+                        <strong>{{ data.item.name }}</strong>
                       </div>
-                    </template>
-                  </v-select>
+                      <small style="color: grey">{{
+                        data.item.description
+                      }}</small>
+                    </div>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showPassword ? 'text' : 'password'"
+                  name="input-10-2"
+                  label="Alterar senha"
+                  clearable
+                  value=""
+                  v-model="companyData.password"
+                  class="input-group--focused"
+                  @click:append="showPassword = !showPassword"
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-form>
@@ -210,6 +236,7 @@ export default {
     pathFile: undefined,
     file: undefined,
     loadingButton: false,
+    showPassword: false,
     genderOptions: [
       { _id: "Male", name: "Masculino" },
       { _id: "Female", name: "Feminino" },
@@ -353,6 +380,7 @@ export default {
   methods: {
     uploadFile($event) {
       if ($event && $event.length > 0) {
+        console.log($event);
         this.file = $event[0];
         this.pathFile = URL.createObjectURL($event[0]);
       }
@@ -377,18 +405,21 @@ export default {
       console.log("SALVANDO DADOS USUARIO");
       if (this.$refs.userForm.validate()) {
         const userApi = new Users();
-        if (this.file) {
+        this.mainControll.globalLoading = true;
+        let canSetCurriculum = false;
+        console.log(this.file);
+        console.log(this.file != undefined);
+        if (this.file != undefined) {
           await userApi
             .sendCurriculum(this.userData.userId, this.file)
             .then((success) => {
-              this.showSuccessSnackBar("Curriculo atualizado com sucesso");
+              canSetCurriculum = true;
+              // this.user.curriculum = success.data
             })
             .catch((err) => {
               this.showInvalidSnackBar("Não foi possível enviar curriculo");
-              console.error(err);
             });
         }
-        this.mainControll.globalLoading = true;
         delete this.user.curriculum;
         await userApi
           .editUSer(this.userData.userId, this.user)
@@ -399,9 +430,9 @@ export default {
             this.userData.gender = success.data.gender;
             this.userData.email = success.data.email;
             this.userData.cpf = success.data.cpf;
-            debugger;
             this.userData.description = success.data.description;
-            this.userData.curriculum = success.data.curriculum ? true : false;
+            this.userData.curriculum =
+              success.data.curriculum || canSetCurriculum ? true : false;
             this.user = Object.assign({}, this.userData);
             this.mainControll.globalLoading = false;
           })

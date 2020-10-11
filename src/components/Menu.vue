@@ -7,7 +7,7 @@
       style="background: linear-gradient(to right, #16a0bf, #025891)"
     >
       <v-row class="mt-2">
-        <v-col cols="4" sm="4" md="4" class="mt-2">
+        <v-col cols="6" sm="6" md="4" class="mt-2">
           <span
             style="cursor: pointer"
             class="title ml-1 mr-5"
@@ -261,6 +261,7 @@ export default {
           this.mainControll.dashInfo = success.data.dashInfo;
           this.mainControll.company["companyId"] = company._id;
           this.mainControll.company["name"] = company.name;
+          this.$router.push("/recruiter")
         })
         .catch((err) => {
           this.mainControll.globalLoading = false;

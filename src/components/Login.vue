@@ -68,6 +68,19 @@
                     @click:append="showPassword = !showPassword"
                   ></v-text-field>
 
+                  <div
+                    class="cyan--text"
+                    style="
+                      cursor: pointer;
+                      cursor: pointer;
+                      font-weight: bold;
+                      text-decoration: underline;
+                    "
+                    @click="openResetPassword('email')"
+                  >
+                    Recuperar senha
+                  </div>
+
                   <v-btn
                     color="error"
                     outlined
@@ -117,6 +130,19 @@
                     class="input-group--focused"
                     @click:append="showPassword = !showPassword"
                   ></v-text-field>
+
+                  <div
+                    class="cyan--text"
+                    style="
+                      cursor: pointer;
+                      cursor: pointer;
+                      font-weight: bold;
+                      text-decoration: underline;
+                    "
+                    @click="openResetPassword('cnpj')"
+                  >
+                    Recuperar senha
+                  </div>
 
                   <v-btn
                     color="error"
@@ -345,16 +371,37 @@
             </v-card>
           </v-tab-item>
         </v-tabs>
-
-        <!-- <v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="resetPasswordModal" persistent max-width="600">
+      <v-card>
+        <v-card-title class="headline grey--text">Recuperar senha {{this.type == 'cnpj' ? 'da conta da sua empresa' : 'da sua conta de usuário'}}</v-card-title>
+        <v-card-text>
+          <v-form
+            ref="formResetPass"
+          >
+            <v-text-field
+              v-model="emailToReset"
+              label="E-mail"
+              :rules="emailRules"
+              clearable
+              required
+            ></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="dialog = false"
-            >Disagree</v-btn
+          <v-btn
+            color="red darken-1"
+            small
+            text
+            @click="resetPasswordModal = false"
+            >Fechar</v-btn
           >
-          <v-btn color="green darken-1" text @click="dialog = false"
-            >Agree</v-btn
+          <v-btn color="teal darken-1" small @click="resetPassword" dark
+            >Resetar</v-btn
           >
-        </v-card-actions> -->
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
@@ -363,13 +410,16 @@
 <script>
 import { Users } from "@/services/users.js";
 import { Companies } from "@/services/companies.js";
-import RemoveSpecialCharacters from '@/util/remove-special-characters.js';
+import RemoveSpecialCharacters from "@/util/remove-special-characters.js";
 
 export default {
   props: {
     mainControll: Object,
   },
   data: () => ({
+    type: "",
+    emailToReset: "",
+    resetPasswordModal: false,
     tab: null,
     centered: false,
     prevIcon: false,
@@ -410,7 +460,7 @@ export default {
       password: "",
     },
     descRules: [
-      (v) => v && v.length <= 50 || "Campo descrição no máximo 50 caracteres",
+      (v) => (v && v.length <= 50) || "Campo descrição no máximo 50 caracteres",
     ],
     cpfRules: [
       (cpf) => {
@@ -557,7 +607,6 @@ export default {
       let data = { password: this.loginForm.password };
       if (this.loginForm.companyForm) {
         data["cnpj"] = RemoveSpecialCharacters(this.loginForm.cnpj);
-        
       } else {
         data["email"] = this.loginForm.email;
       }
@@ -672,11 +721,11 @@ export default {
           .create(data)
           .then(async (success) => {
             const user = new Users();
-            const authData = { password: data.password };
-            if (this.loginForm.companyForm) {
-              authData["cnpj"] = data.cnpj;
+            const authData = { password: this.registerForm.password };
+            if (this.registerForm.companyForm) {
+              authData["cnpj"] = RemoveSpecialCharacters(this.registerForm.cnpj);
             } else {
-              authData["email"] = data.email;
+              authData["email"] = this.registerForm.email;
             }
             await user
               .authenticate(authData)
@@ -727,10 +776,48 @@ export default {
         this.mainControll.globalLoading = false;
       }
     },
+    openResetPassword(type) {
+      this.type = type;
+      this.emailToReset = "";
+      this.resetPasswordModal = true;
+    },
     showInvalidSnackBar(message) {
       this.mainControll.alert.color = "red";
       this.mainControll.alert.text = message;
       this.mainControll.alert.show = true;
+    },
+    showValidSnackBar(message) {
+      this.mainControll.alert.color = "green";
+      this.mainControll.alert.text = message;
+      this.mainControll.alert.show = true;
+    },
+    resetPassword() {
+      const userS = new Users();
+      if(this.$refs.formResetPass.validate()){
+        this.mainControll.globalLoading = true;
+        userS
+          .resetPassowrd(this.emailToReset, this.type == "cnpj")
+          .then((resp) => {
+            this.mainControll.globalLoading = false;
+            this.resetPasswordModal = false;
+            if (resp.status == 200) {
+              this.showValidSnackBar(resp.data.message);
+            } else {
+              this.showInvalidSnackBar(resp.data.message);
+            }
+          })
+          .catch((err) => {
+            this.mainControll.globalLoading = false;
+            if (err.response && err.response.status == 404) {
+              this.showInvalidSnackBar(err.response.message);
+            } else {
+              console.error(err);
+              this.showInvalidSnackBar(
+                "Não foi possível resetar sua senha! A nossa equipe entrará em contato!"
+              );
+            }
+          });
+      }
     },
   },
 };

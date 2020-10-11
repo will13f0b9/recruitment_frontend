@@ -214,9 +214,15 @@
               <span v-else>-</span>
             </v-col>
           </v-row>
-          <v-row style="font-weight: bold; color: #234" justify="start" class="ml-2">
+          <v-row
+            style="font-weight: bold; color: #234"
+            justify="start"
+            class="ml-2"
+          >
             <v-col>
-              <span v-if="job.examConfig.length > 0">Possui exames obrigatórios ao se candidatar</span>
+              <span v-if="job.examConfig.length > 0"
+                >Possui exames obrigatórios ao se candidatar</span
+              >
               <span v-else>Nâo possui exames</span>
             </v-col>
           </v-row>
@@ -231,7 +237,8 @@
             !company.hasOwnProperty('companyId') &&
             job.cadidateUsers &&
             job.cadidateUsers.indexOf(userData.userId) != -1 &&
-            job.examConfig
+            job.examConfig &&
+            job.examConfig.length > 0
           "
           @click="pushToExame()"
           >Visualizar Exame</v-btn
@@ -247,11 +254,11 @@
             !userData.curriculum ||
             job.done
           "
-          @click="dialog = !dialog"
+          @click="candidateUserToJob()"
           >{{
             job.cadidateUsers &&
             job.cadidateUsers.indexOf(userData.userId) != -1
-              ? "Você já está candidatado a vaga"
+              ? "Você está candidatado a vaga"
               : job.done
               ? "Vaga encerrada!"
               : "Candidatar-se!"
@@ -332,6 +339,7 @@
                     -1
                   "
                 >
+                  <small>Situação na vaga:</small><br />
                   APROVADO
                 </div>
 
@@ -343,9 +351,13 @@
                     ) != -1
                   "
                 >
+                  <small>Situação na vaga:</small><br />
                   REPROVADO
                 </div>
-                <div class="base neutral" v-else>PENDENTE</div>
+                <div class="base neutral" v-else>
+                  <small>Situação na vaga:</small><br />
+                  PENDENTE
+                </div>
                 <v-col>
                   <div class="ml-2 grey--text font-weight-bold">
                     Nome do candidato:
@@ -356,7 +368,7 @@
                     }}
                   </div>
                 </v-col>
-                <v-col>
+                <v-col v-if="!job.examConfig || job.examConfig.length != 0">
                   <div class="ml-2 grey--text font-weight-bold">
                     Concluiu exame?:
                   </div>
@@ -370,9 +382,9 @@
                     >
                   </div>
                 </v-col>
-                <v-col>
+                <v-col v-if="!job.examConfig || job.examConfig.length != 0">
                   <div class="ml-2 grey--text font-weight-bold">
-                    Data de inicio do exame:
+                    Data de inicio da candidatura:
                   </div>
                   <div class="ml-2 text-justify pr-2">
                     {{
@@ -382,7 +394,7 @@
                     }}
                   </div>
                 </v-col>
-                <v-col>
+                <v-col v-if="!job.examConfig || job.examConfig.length != 0">
                   <div class="ml-2 grey--text font-weight-bold">
                     Data de conclusão do exame:
                   </div>
@@ -394,14 +406,28 @@
                     }}
                   </div>
                 </v-col>
-                <v-col>
+                <v-col style="text-align: center" v-if="!job.examConfig || job.examConfig.length != 0">
                   <div class="ml-2 font-weight-bold">
                     <strong>Acertos</strong>
                   </div>
-                  <div class="ml-2 text-justify pr-2">
+                  <div class="ml-2 pr-2">
                     <strong>{{
                       candidate.hitPercent ? candidate.hitPercent : "-"
                     }}</strong>
+                  </div>
+                  <div v-if="candidate.doneAt">
+                    <v-chip
+                      close-icon="mdi-close-outline"
+                      color="yellow"
+                      filter
+                      link
+                      label
+                      pill
+                      @click="openDetails(candidate)"
+                    >
+                      <v-icon>mdi-alert-octagon-outline</v-icon> Ver
+                      detalhes</v-chip
+                    >
                   </div>
                 </v-col>
                 <v-col
@@ -587,12 +613,88 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="examDetailsDialog" persistent>
+        <v-card>
+          <v-card-title class="headline grey--text"
+            >Detalhes do exame de
+            <span class="ml-2 black--text"
+              ><strong>{{ selectedUser.candidateName }}:</strong></span
+            ></v-card-title
+          >
+          <v-card-text>
+            <v-row
+              v-for="exam in  examDetails.filter(d => d.quantity)"
+              :key="exam._id"
+              style="box-shadow: 5px 4px 7px 1px #0000001a"
+              :style="`border-left: 10px solid #${(
+                (Math.random() * 0xffffff) <<
+                0
+              ).toString(16)};`"
+            >
+              <v-col
+                cols="12"
+                sm="12"
+                style="background-color: #f7f7f7; margin-top: 15px"
+              >
+                <h3>
+                  <strong>{{ exam.skill }}</strong>
+                </h3>
+              </v-col>
+              <v-col>
+                <div class="pt-0 ml-2 text-center font-weight-bold">
+                  <strong>Quantidade de questões</strong>
+                </div>
+                <div class="ml-2 text-center pr-2">
+                  <strong>{{ exam.quantity ? exam.quantity : "-" }}</strong>
+                </div>
+              </v-col>
+              <v-col>
+                <div class="ml-2 text-center font-weight-bold">
+                  <strong>Acertos</strong>
+                </div>
+                <div class="ml-2 text-center pr-2">
+                  <strong>{{ exam.success ? exam.success : "-" }}</strong>
+                </div>
+              </v-col>
+              <v-col>
+                <div class="ml-2 text-center font-weight-bold">
+                  <strong>Erros</strong>
+                </div>
+                <div class="ml-2 text-center pr-2">
+                  <strong>{{ exam.error ? exam.error : "-" }}</strong>
+                </div>
+              </v-col>
+
+              <v-col>
+                <div class="ml-2 text-center font-weight-bold">
+                  <strong>Porcentagem de acertos</strong>
+                </div>
+                <div class="ml-2 text-center pr-2">
+                  <strong>{{ exam.hitPercent ? exam.hitPercent : "-" }}</strong>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              small
+              text
+              @click="examDetailsDialog = false"
+              >Fechar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </article>
   </v-container>
 </template>
 <script>
 import { Jobs } from "@/services/jobs.js";
 import { Users } from "@/services/users.js";
+import { Exams } from "@/services/exams.js";
 export default {
   props: {
     userData: Object,
@@ -603,6 +705,9 @@ export default {
   components: {},
   data: () => ({
     job: {},
+    selectedUser: {},
+    examDetailsDialog: false,
+    examDetails: [],
     dialog: false,
     activeLoading: true,
     dialogCandidates: false,
@@ -616,12 +721,6 @@ export default {
   }),
   async mounted() {
     console.log("ROUTER");
-    if (
-      this.$router.currentRoute.query &&
-      this.$router.currentRoute.query.candidate
-    ) {
-      this.dialog = this.$router.currentRoute.query.candidate;
-    }
     let id = this.$router.currentRoute.params.id;
     const jobsApi = new Jobs();
     this.activeLoading = true;
@@ -630,7 +729,6 @@ export default {
       .then((success) => {
         this.job = success.data;
         this.activeLoading = false;
-        console.log("jobson", success.data)
       })
       .catch((err) => {
         this.job = {};
@@ -796,6 +894,74 @@ export default {
           this.mainControll.globalLoading = false;
           console.error(err);
           this.showInvalidSnackBar(err.response.data["message"]);
+        });
+    },
+    async candidateUserToJob() {
+      if (this.job.examConfig.length > 0) {
+        this.dialog = true;
+      } else {
+        const job = new Jobs();
+        this.mainControll.globalLoading = true;
+
+        const id = this.job._id;
+        const userId = this.mainControll.userData.userId;
+
+        await job
+          .candidateUserToJob(id, userId)
+          .then((resp) => {
+            this.mainControll.globalLoading = false;
+            if (resp.status == 200) {
+              this.job.cadidateUsers.push(userId)
+              this.showSuccessSnackBar("Candidatado com sucesso a vaga!");
+            } else if (resp.data["message"]) {
+              this.showInvalidSnackBar(resp.data["message"]);
+            } else {
+              this.showInvalidSnackBar(
+                "Não foi possível candidatar a vaga. Nossa equipe entrará em contato"
+              );
+            }
+          })
+          .catch((err) => {
+            this.mainControll.globalLoading = false;
+            console.error(err);
+            if (err.response.data["message"]) {
+              this.showInvalidSnackBar(err.response.data["message"]);
+            } else {
+              this.showInvalidSnackBar(
+                "Não foi possível candidatar a vaga. Nossa equipe entrará em contato"
+              );
+            }
+          });
+      }
+    },
+    async openDetails(candidate) {
+      const exams = new Exams();
+      const id = this.job._id;
+      this.selectedUser = candidate;
+      this.mainControll.globalLoading = true;
+      await exams
+        .detailsOfExamUser(id, candidate.candidateId)
+        .then((resp) => {
+          this.mainControll.globalLoading = false;
+
+          if (resp.status == 200) {
+            this.examDetails = resp.data.examConfig;
+            this.examDetailsDialog = true;
+          } else {
+            this.examDetails = [];
+          }
+        })
+        .catch((err) => {
+          this.mainControll.globalLoading = false;
+          console.error(err);
+          this.examDetails = [];
+          if (err.response.data["message"]) {
+            this.showInvalidSnackBar(err.response.data["message"]);
+          } else {
+            this.showInvalidSnackBar(
+              "Não foi possível buscar detalhes do exame! Nossa equipe entrará em contato"
+            );
+          }
         });
     },
   },

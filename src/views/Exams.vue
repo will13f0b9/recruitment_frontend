@@ -1,19 +1,27 @@
 <template>
   <article v-show="show">
     <v-stepper v-model="e1" non-linear>
-      <v-btn @click="$router.push('/jobs/' + $router.currentRoute.params.id)" class="blue--text" text fab small>
+      <v-btn
+        @click="$router.push('/jobs/' + $router.currentRoute.params.id)"
+        class="blue--text"
+        text
+        fab
+        small
+      >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-col cols="12" sm="12" md="12">
-        <div class="base approved" v-if="dataOfDone">
-          Exame Finalizado
+        <div v-if="!dataOfDone && (!questions || questions.length == 0)" class="base neutral">Exame sem questões!</div>
+        <div class="base approved" v-else-if="dataOfDone">
+          <small>Situação do exame:</small><br/>
+          FINALIZADO
           <div>
             <small v-if="verifyFeedback()"
               >Em breve recebera o resultado da empresa</small
             >
           </div>
         </div>
-        <div class="base neutral" v-else>PENDENTE</div>
+        <div class="base neutral" v-else><small>Situação do exame:</small><br/>PENDENTE</div>
       </v-col>
       <v-row v-if="!dataOfDone" align="center" justify="end" class="mr-2">
         <v-col cols="3" style="text-align: center">
@@ -103,16 +111,30 @@
               >Acertos</v-list-item-subtitle
             >
             <span class="mt-2">{{ dataDone ? dataDone.hitPercent : "" }}</span>
+            <div v-if="dataDone.doneAt">
+              <v-chip
+                close-icon="mdi-close-outline"
+                color="yellow"
+                filter
+                link
+                label
+                pill
+                @click="openDetails()"
+              >
+                <v-icon>mdi-alert-octagon-outline</v-icon> Ver detalhes</v-chip
+              >
+            </div>
           </div>
         </v-col>
       </v-row>
       <v-stepper-header v-if="!dataOfDone">
         <article v-for="(question, index) in questions" :key="question._id">
+          
           <v-stepper-step
-            color="cyan"
+            :color="question.questionId.aswer ? 'cyan' : 'grey'"
             editable
-            :complete="e1 > index"
-            :step="index"
+            :complete="question.questionId.aswer ? true : false"
+            :step="index + 1"
           >
             {{ question.questionId.title }}
           </v-stepper-step>
@@ -121,80 +143,92 @@
       </v-stepper-header>
 
       <v-stepper-items v-if="!dataOfDone">
-          <v-stepper-content  v-for="(question, index) in questions" :step="`${index}`" :key="`${index}-content`" style="overflow:scroll">
-            <strong style="font-size: 1.2em">{{
-              question.questionId.description
-            }}</strong>
+        <v-stepper-content
+          v-for="(question, index) in questions"
+          :step="index + 1"
+          :key="index + 1"
+          style="overflow: scroll"
+        >
+          <strong class="cyan--text">{{index + 1}} ) </strong>
+          <strong style="font-size: 1.2em">{{
+            question.questionId.description
+          }}</strong>
 
-            <v-card class="mb-12" color="grey lighten-3" height="200px" style="overflow:scroll">
-              <ul class="pa-5 ml-5" style="cursor: pointer">
-                <li
-                  style="
-                    display: flex;
-                    flex: 1;
-                    align-items: center;
-                    text-align: left !important;
-                  "
-                  class="mt-2"
-                  v-for="alternative in question.questionId.alternatives"
-                  :key="alternative.id"
-                  v-ripple="{ class: 'indigo--text' }"
-                  @click="selectQuestion(index, question, alternative.id)"
-                  :class="
-                    question.questionId.aswer == alternative.id
-                      ? `selected`
-                      : ''
-                  "
-                >
-                  <v-btn text>
-                    <v-btn
-                      color="primary"
-                      class="mr-2"
-                      small
-                      elevation="2"
-                      icon
-                      outlined
-                    >
-                      {{ alternative.id }}
-                    </v-btn>
-                    <span style="text-transform:none;!important;">{{
-                      alternative.description
-                    }}</span>
+          <v-card
+            class="mb-12"
+            color="grey lighten-3"
+            style="overflow: scroll"
+          >
+            <ul class="pa-5 ml-5" style="cursor: pointer">
+              <li
+                style="
+                  display: flex;
+                  flex: 1;
+                  align-items: center;
+                  text-align: left !important;
+                "
+                class="mt-2"
+                v-for="alternative in question.questionId.alternatives"
+                :key="alternative.id"
+                v-ripple="{ class: 'indigo--text' }"
+                @click="selectQuestion(index, question, alternative.id)"
+                :class="
+                  question.questionId.aswer == alternative.id ? `selected` : ''
+                "
+              >
+                <v-btn text>
+                  <v-btn
+                    color="primary"
+                    class="mr-2"
+                    small
+                    elevation="2"
+                    icon
+                    outlined
+                  >
+                    {{ alternative.id }}
                   </v-btn>
-                </li>
-              </ul>
-            </v-card>
+                  <span style="text-transform:none;!important;">{{
+                    alternative.description
+                  }}</span>
+                </v-btn>
+              </li>
+            </ul>
+          </v-card>
 
-            <v-btn
-              color="primary"
-              :disabled="index == 0"
-              outlined
-              small
-              class="mr-2"
-              @click="e1 = index > 0 ? index - 1 : index"
-            >
-              Voltar</v-btn
-            >
-            <v-btn
-              color="primary"
-              small
-              :disabled="index == questions.length - 1"
-              @click="e1 = index + 1"
-            >
-              Próxima</v-btn
-            >
-          </v-stepper-content>
-          <v-divider></v-divider>
-      <v-btn
-        block
-        x-large
-        color="teal"
-        :disabled="(questions.length == 0 ? true : false) || dataOfDone || questions.some(question => !question.questionId.aswer)"
-        :outlined="!(totalHits == questions.length)"
-        @click="dialogDoneExam = true"
-      >
-        Finalizar Exame
-      </v-btn>
+          <v-btn
+            color="primary"
+            :disabled="(index + 1) == 1"
+            outlined
+            small
+            class="mr-2"
+            @click="e1 = index > 1 ? index - 1 : index"
+          >
+            Voltar</v-btn
+          >
+          <v-btn
+            color="primary"
+            small
+            :disabled="(index + 1) == questions.length"
+            @click="e1 = (index + 2)"
+          >
+            Próxima</v-btn
+          >
+        </v-stepper-content>
+        <v-divider></v-divider>
+        <v-btn
+          block
+          x-large
+          color="teal"
+          :disabled="
+            (questions.length == 0 ? true : false) ||
+            dataOfDone ||
+            questions.some((question) => !question.questionId.aswer)
+          "
+          :outlined="!(totalHits == questions.length)"
+          @click="dialogDoneExam = true"
+        >
+          Finalizar Exame
+        </v-btn>
       </v-stepper-items>
     </v-stepper>
     <v-dialog v-model="dialogDoneExam" persistent max-width="600">
@@ -280,6 +314,73 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="examDetailsDialog" persistent>
+      <v-card>
+        <v-card-title class="headline grey--text"
+          >Detalhes do seu exame!</v-card-title>
+        <v-card-text>
+          <v-row
+            v-for="exam in examDetails.filter(d => d.quantity)"
+            :key="exam._id"
+            style="box-shadow: 5px 4px 7px 1px #0000001a"
+            :style="`border-left: 10px solid #${((Math.random() * 0xffffff) << 0).toString(16)};`"
+          >
+            <v-col
+              cols="12"
+              sm="12"
+              style="background-color: #f7f7f7; margin-top: 15px"
+            >
+              <h3>
+                <strong>{{ exam.skill }}</strong>
+              </h3>
+            </v-col>
+            <v-col>
+              <div class="pt-0 ml-2 text-center font-weight-bold">
+                <strong>Quantidade de questões</strong>
+              </div>
+              <div class="ml-2 text-center pr-2">
+                <strong>{{ exam.quantity ? exam.quantity : "-" }}</strong>
+              </div>
+            </v-col>
+            <v-col>
+              <div class="ml-2 text-center font-weight-bold">
+                <strong>Acertos</strong>
+              </div>
+              <div class="ml-2 text-center pr-2">
+                <strong>{{ exam.success ? exam.success : "-" }}</strong>
+              </div>
+            </v-col>
+            <v-col>
+              <div class="ml-2 text-center font-weight-bold">
+                <strong>Erros</strong>
+              </div>
+              <div class="ml-2 text-center pr-2">
+                <strong>{{ exam.error ? exam.error : "-" }}</strong>
+              </div>
+            </v-col>
+
+            <v-col>
+              <div class="ml-2 text-center font-weight-bold">
+                <strong>Porcentagem de acertos</strong>
+              </div>
+              <div class="ml-2 text-center pr-2">
+                <strong>{{ exam.hitPercent ? exam.hitPercent : "-" }}</strong>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-1"
+            small
+            text
+            @click="examDetailsDialog = false"
+            >Fechar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </article>
 </template>
 <script>
@@ -299,6 +400,8 @@ export default {
     dialogDoneExam: false,
     dataOfDone: false,
     dataDone: {},
+    examDetails: [],
+    examDetailsDialog: false,
   }),
   async mounted() {
     console.log("ROUTER");
@@ -322,6 +425,9 @@ export default {
                   this.startedAt = c.startedAt;
                   this.doneAt = c.doneAt;
                   this.questions = c.questions;
+                  setTimeout(()=>{
+                    this.e1 = 1;
+                  }, 100)
                 }
               });
             }
@@ -335,8 +441,6 @@ export default {
       })
       .catch((err) => {
         if (err.response.status == 404) {
-          this.successSnackBar("Estamos buscando as informações do exame"
-          );
           exam
             .examOfUser(jobId, candidateId)
             .then((resp) => {
@@ -421,6 +525,37 @@ export default {
 
       this.mainControll.globalLoading = false;
     },
+    async openDetails() {
+      const exams = new Exams();
+      const jobId = this.$router.currentRoute.params.id;
+      const candidateId = this.$router.currentRoute.params.userId;
+
+      this.mainControll.globalLoading = true;
+      await exams
+        .detailsOfExamUser(jobId, candidateId)
+        .then((resp) => {
+          this.mainControll.globalLoading = false;
+
+          if (resp.status == 200) {
+            this.examDetails = resp.data.examConfig;
+            this.examDetailsDialog = true;
+          } else {
+            this.examDetails = [];
+          }
+        })
+        .catch((err) => {
+          this.mainControll.globalLoading = false;
+          console.error(err);
+          this.examDetails = [];
+          if (err.response.data["message"]) {
+            this.showInvalidSnackBar(err.response.data["message"]);
+          } else {
+            this.showInvalidSnackBar(
+              "Não foi possível buscar detalhes do exame! Nossa equipe entrará em contato"
+            );
+          }
+        });
+    },
     verifyFeedback() {
       return (
         !this.dataDone.approved ||
@@ -428,9 +563,9 @@ export default {
         (this.dataDone.approved.indexOf(
           this.$router.currentRoute.params.userId
         ) == -1 &&
-        this.dataDone.repproved.indexOf(
-          this.$router.currentRoute.params.userId
-        ) == -1)
+          this.dataDone.repproved.indexOf(
+            this.$router.currentRoute.params.userId
+          ) == -1)
       );
     },
   },
@@ -464,5 +599,4 @@ export default {
   color: #000000;
   background-color: #9c99994a;
 }
-
 </style>

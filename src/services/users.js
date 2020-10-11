@@ -52,4 +52,8 @@ export class Users extends BaseApi {
     async addNewCompanyToUser(companyId, userId){
         return axios.post(`${this.cUri}/${userId}/companies/`, {companyId: companyId})
     }
+
+    async resetPassowrd(email, isCompany){
+        return axios.post(`${this.cUri}/reset/password?email=${email}&isCompany=${isCompany}`)
+    }
 }

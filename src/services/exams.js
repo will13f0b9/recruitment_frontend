@@ -23,4 +23,10 @@ export class Exams extends BaseApi {
     async examOfUser(jobId, userId) {
         return axios.get(`${this.resourceUri}/infos/jobs/${jobId}/users/${userId}`);
     }
+
+    async detailsOfExamUser(jobId, userId) {
+        return axios.get(`${this.resourceUri}/infos/details/jobs/${jobId}/users/${userId}`);
+    }
+
+    
 }

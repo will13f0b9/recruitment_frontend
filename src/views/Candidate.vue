@@ -24,6 +24,7 @@
                   <v-row no-gutters>
                     <v-col cols="12" sm="12" md="12">
                       <div class="base approved" v-if="job.approved">
+                        <small>Situação na vaga:</small><br />
                         APROVADO
                         <div>
                           <small
@@ -33,9 +34,10 @@
                         </div>
                       </div>
                       <div class="base repproved" v-else-if="job.repproved">
+                        <small>Situação na vaga:</small><br />
                         REPROVADO
                       </div>
-                      <div class="base neutral" v-else>PENDENTE</div>
+                      <div class="base neutral" v-else><small>Situação na vaga:</small><br />PENDENTE</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="6">
                       <div
@@ -104,19 +106,6 @@
                   <v-card-actions class="mt-5 mb-0 pb-0">
                     <v-row>
                       <v-col>
-                        <v-btn
-                          color="success darken-3"
-                          solid
-                          outlined
-                          small
-                          block
-                          @click="
-                            $router.push('/jobs/' + job._id + '?candidate=true')
-                          "
-                          v-if="!job.exam || !job.exam.doneAt"
-                          class="white--text mb-2"
-                          >Concluir</v-btn
-                        >
                         <v-btn
                           small
                           dark

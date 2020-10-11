@@ -1,6 +1,7 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
+      style="z-index: 999;"
       v-if="
         mainControll &&
         !mainControll.company.hasOwnProperty('companyId') &&

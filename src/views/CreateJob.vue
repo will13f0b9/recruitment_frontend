@@ -7,7 +7,7 @@
           <v-card class="mx-auto">
             <v-card-text>
               <v-btn
-                @click="$router.push('/jobs/' + $router.currentRoute.params.id)"
+                @click="$router.push('/jobs/')"
                 class="blue--text"
                 text
                 fab
