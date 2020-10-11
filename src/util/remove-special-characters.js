@@ -1,5 +1,5 @@
 const RemoveSpecialCharacters = (value) => {
-  return value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+  return value ? value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') : value;
 }
 
 export default RemoveSpecialCharacters;
