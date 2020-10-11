@@ -1,13 +1,14 @@
 <template>
   <v-app v-if="loggedRouter()" class="about">
     <v-alert
-      style="z-index: 999;"
+      style="z-index: 999"
       v-if="
         mainControll &&
         !mainControll.company.hasOwnProperty('companyId') &&
         mainControll.userData &&
-        mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
-        (!mainControll.userData.curriculum || mainControll.userData.curriculum.length > 0)
+        mainControll.userData.profiles && mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
+        (!mainControll.userData.curriculum ||
+          mainControll.userData.curriculum.length > 0)
       "
       color="yellow"
       border="left"
@@ -49,16 +50,17 @@
           : '#'
       "
       :company="mainControll.company"
-      >></Menu>
-    <router-view
-      :userData="mainControll.userData"
-      :dashInfo="mainControll.dashInfo"
-      :company="mainControll.company"
-      :mainControll="mainControll"
-    ></router-view>
+      >></Menu
+    >
+      <router-view
+        :userData="mainControll.userData"
+        :dashInfo="mainControll.dashInfo"
+        :company="mainControll.company"
+        :mainControll="mainControll"
+      ></router-view>
   </v-app>
   <v-app v-else class="about">
-    <router-view :mainControll="mainControll"></router-view>
+      <router-view :mainControll="mainControll"></router-view>
   </v-app>
 </template>
 
@@ -192,7 +194,7 @@ export default {
       this.mainControll.userData = Object.assign({}, {});
       this.mainControll.company = Object.assign({}, {});
     }
-  }
+  },
 };
 </script>
 <style>
@@ -308,6 +310,5 @@ button {
     left: 12px;
     right: 12px;
   }
-  
 }
 </style>
