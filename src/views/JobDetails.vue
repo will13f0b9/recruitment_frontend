@@ -9,7 +9,7 @@
         height="5"
       ></v-progress-linear>
     </article>
-    <article v-else>
+    <article v-else style="box-shadow: 0 0 6px rgba(0,0,0,0.4)">
       <v-row no-gutters class="header" justify="center">
         <v-col>
           <v-btn
@@ -227,65 +227,66 @@
             </v-col>
           </v-row>
         </article>
-        <v-btn
-          x-large
-          block
-          class="mt-5"
-          color="success"
-          v-if="
-            company &&
-            !company.hasOwnProperty('companyId') &&
-            job.cadidateUsers &&
-            job.cadidateUsers.indexOf(userData.userId) != -1 &&
-            job.examConfig &&
-            job.examConfig.length > 0
-          "
-          @click="pushToExame()"
-          >Visualizar Exame</v-btn
-        >
-        <v-btn
-          x-large
-          block
-          color="success"
-          v-if="company && !company.hasOwnProperty('companyId')"
-          :disabled="
-            (job.cadidateUsers &&
-              job.cadidateUsers.indexOf(userData.userId) != -1) ||
-            !userData.curriculum ||
-            job.done
-          "
-          @click="candidateUserToJob()"
-          >{{
-            job.cadidateUsers &&
-            job.cadidateUsers.indexOf(userData.userId) != -1
-              ? "Você está candidatado a vaga"
-              : job.done
-              ? "Vaga encerrada!"
-              : "Candidatar-se!"
-          }}</v-btn
-        >
-        <v-btn
-          v-if="company && company.hasOwnProperty('companyId')"
-          class="mt-5"
-          color="teal"
-          block
-          x-large
-          raised
-          dark
-          @click="findCandidates(job._id)"
-        >
-          <span class="mr-2">Visualizar Candidatos</span>
-          <v-icon dark small> mdi-eye-settings </v-icon>
-        </v-btn>
-        <v-btn
-          x-large
-          block
-          class="white--text"
-          :color="job.done ? 'indigo' : 'red'"
-          v-if="company && company.hasOwnProperty('companyId')"
-          @click="changeJobDone(!job.done)"
-          >{{ job.done ? "Reabrir vaga" : "Encerrar vaga" }}</v-btn
-        >
+        <div style="padding: 8px">
+          <v-btn
+            x-large
+            block
+            class="mt-5"
+            color="success"
+            v-if="
+              company &&
+              !company.hasOwnProperty('companyId') &&
+              job.cadidateUsers &&
+              job.cadidateUsers.indexOf(userData.userId) != -1 &&
+              job.examConfig &&
+              job.examConfig.length > 0
+            "
+            @click="pushToExame()"
+            >Visualizar Exame</v-btn
+          >
+          <v-btn
+            x-large
+            block
+            color="success"
+            v-if="company && !company.hasOwnProperty('companyId')"
+            :disabled="
+              (job.cadidateUsers &&
+                job.cadidateUsers.indexOf(userData.userId) != -1) ||
+              !userData.curriculum ||
+              job.done
+            "
+            @click="candidateUserToJob()"
+            >{{
+              job.cadidateUsers &&
+              job.cadidateUsers.indexOf(userData.userId) != -1
+                ? "Você está candidatado a vaga"
+                : job.done
+                ? "Vaga encerrada!"
+                : "Candidatar-se!"
+            }}</v-btn
+          >
+          <v-btn
+            v-if="company && company.hasOwnProperty('companyId')"
+            class="mt-5"
+            color="teal"
+            block
+            x-large
+            raised
+            dark
+            @click="findCandidates(job._id)"
+          >
+            <span class="mr-2">Visualizar Candidatos</span>
+            <v-icon dark small> mdi-eye-settings </v-icon>
+          </v-btn>
+          <v-btn
+            x-large
+            block
+            class="white--text"
+            :color="job.done ? 'indigo' : 'red'"
+            v-if="company && company.hasOwnProperty('companyId')"
+            @click="changeJobDone(!job.done)"
+            >{{ job.done ? "Reabrir vaga" : "Encerrar vaga" }}</v-btn>
+        </div>
       </article>
       <v-dialog v-model="dialog" persistent max-width="400">
         <v-card>
@@ -986,14 +987,9 @@ export default {
 }
 .header {
   background: linear-gradient(to right, #16a0bf, #025891);
-  border: thin solid white;
-  border-radius: 4px 4px 0px 0px;
-  border-bottom: none;
   padding: 0px 0px 1px 10px;
 }
 .jobWrapper {
-  border: 1px solid lightslategray;
-  border-top: none;
   border-radius: 0px 0px 4px 4px;
 }
 

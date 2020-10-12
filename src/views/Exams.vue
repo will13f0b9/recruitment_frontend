@@ -1,6 +1,6 @@
 <template>
-  <article v-show="show">
-    <v-stepper v-model="e1" non-linear>
+  <article v-show="show" style="margin: 0 24px 16px;">
+    <v-stepper v-model="e1" non-linear style="box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2)">
       <v-btn
         @click="$router.push('/jobs/' + $router.currentRoute.params.id)"
         class="blue--text"
@@ -127,7 +127,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-stepper-header v-if="!dataOfDone">
+      <v-stepper-header v-if="!dataOfDone" style="box-shadow: unset; border-bottom: 1px solid #ddd; border-top: 1px solid #ddd;">
         <article v-for="(question, index) in questions" :key="question._id">
           
           <v-stepper-step
@@ -138,7 +138,6 @@
           >
             {{ question.questionId.title }}
           </v-stepper-step>
-          <v-divider></v-divider>
         </article>
       </v-stepper-header>
 
@@ -214,21 +213,23 @@
             Próxima</v-btn
           >
         </v-stepper-content>
-        <v-divider></v-divider>
-        <v-btn
-          block
-          x-large
-          color="teal"
-          :disabled="
-            (questions.length == 0 ? true : false) ||
-            dataOfDone ||
-            questions.some((question) => !question.questionId.aswer)
-          "
-          :outlined="!(totalHits == questions.length)"
-          @click="dialogDoneExam = true"
-        >
-          Finalizar Exame
-        </v-btn>
+        <div style="margin: 0 16px 16px;">
+          <v-btn
+            style="color: white;"
+            block
+            x-large
+            color="teal"
+            :disabled="
+              (questions.length == 0 ? true : false) ||
+              dataOfDone ||
+              questions.some((question) => !question.questionId.aswer)
+            "
+            :outlined="!(totalHits == questions.length)"
+            @click="dialogDoneExam = true"
+          >
+            Finalizar Exame
+          </v-btn>
+        </div>
       </v-stepper-items>
     </v-stepper>
     <v-dialog v-model="dialogDoneExam" persistent max-width="600">
@@ -323,6 +324,7 @@
             v-for="exam in examDetails.filter(d => d.quantity)"
             :key="exam._id"
             style="box-shadow: 5px 4px 7px 1px #0000001a"
+            class="card-detail-exam"
             :style="`border-left: 10px solid #${((Math.random() * 0xffffff) << 0).toString(16)};`"
           >
             <v-col
@@ -413,6 +415,7 @@ export default {
     await exam
       .startExamOfUser(jobId, candidateId)
       .then((success) => {
+        console.log("Success", success)
         if (success.status == 200) {
           this.mainControll.globalLoading = false;
           if (success.data) {
@@ -440,10 +443,12 @@ export default {
         }
       })
       .catch((err) => {
+        console.log("err",  err)
         if (err.response.status == 404) {
           exam
             .examOfUser(jobId, candidateId)
             .then((resp) => {
+              console.log("resp", resp)
               this.mainControll.globalLoading = false;
               this.dataOfDone = true;
               this.dataDone = resp.data;
@@ -598,5 +603,9 @@ export default {
 .neutral {
   color: #000000;
   background-color: #9c99994a;
+}
+
+.card-detail-exam + .card-detail-exam {
+  margin: 16px 0;
 }
 </style>

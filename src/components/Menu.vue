@@ -318,11 +318,11 @@ export default {
 .breadCrumb span::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: -4px;
   left: 30%;
   height: 2px;
   width: 70%;
-  background: wheat;
+  background: white;
   z-index: 0;
   font-size: 1.5em;
   color: white;
