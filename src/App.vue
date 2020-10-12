@@ -1,15 +1,35 @@
 <template>
   <v-app>
-    <v-snackbar style="top: 10%; left: -4%" :color="`${mainControll.alert.color} darken-4`" v-model="mainControll.alert.show" :top="true" :right="true" multi-line :timeout="10000"> 
-        <strong><h3>{{mainControll.alert.text}}</h3></strong>
+    <v-snackbar
+      style="top: 10%; left: -4%"
+      :color="`${mainControll.alert.color} darken-4`"
+      v-model="mainControll.alert.show"
+      :top="true"
+      :right="true"
+      multi-line
+      :timeout="10000"
+    >
+      <strong
+        ><h3>{{ mainControll.alert.text }}</h3></strong
+      >
       <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="mainControll.alert.show = false">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="mainControll.alert.show = false"
+        >
           Fechar
         </v-btn>
       </template>
     </v-snackbar>
     <Login :mainControll="mainControll"></Login>
-    <v-col v-if="mainControll.globalLoading" class="global-loading" cols="12" style="position: fixed; display: flex;">
+    <v-col
+      v-if="mainControll.globalLoading"
+      class="global-loading"
+      cols="12"
+      style="position: fixed; display: flex"
+    >
       <v-row align="center" justify="center">
         <div>
           <h1>Carregando...</h1>
@@ -42,7 +62,7 @@ export default {
       alert: {
         color: "green",
         show: false,
-        text: ``
+        text: ``,
       },
       dashInfo: {},
       userData: {},
@@ -50,12 +70,18 @@ export default {
       plans: [],
     },
   }),
-  async mounted() {
+  mounted: async function() {
+    console.log("propto");
+    console.log(this.$appname);
     const companie = new Companies();
     await companie
       .getPlans()
       .then((resp) => {
-          this.mainControll.plans = resp.data.items ? resp.data.items.sort((a, b) => a.price > b.price ? 1 : a.price < b.price ? -1 : 0 ) : [];
+        this.mainControll.plans = resp.data.items
+          ? resp.data.items.sort((a, b) =>
+              a.price > b.price ? 1 : a.price < b.price ? -1 : 0
+            )
+          : [];
       })
       .catch((err) => {
         this.mainControll.plans = [];
@@ -70,8 +96,8 @@ export default {
   box-sizing: border-box;
   outline: 0;
 }
-.v-stepper__header{
-  height: unset!important;
+.v-stepper__header {
+  height: unset !important;
 }
 /* .v-main__wrap::after {
   content: "";

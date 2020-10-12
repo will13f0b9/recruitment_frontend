@@ -569,7 +569,7 @@ export default {
     ],
     descriptionRules: [
       (value) => !!value || "Descrição da empresa é um campo obrigatório",
-      (v) => v.length <= 50 || "Campo descrição no máximo 50 caracteres",
+      (v) => !!v && v.length <= 50 || "Campo descrição no máximo 50 caracteres",
 
       //   (v) => v.length >= 8 || "Min de 8 caracteres",
       //   () => "The email and password you entered don't match",
@@ -589,15 +589,36 @@ export default {
       if (after) {
         this.mainControll.registerTab ? (this.tab = 1) : (this.tab = 0);
       }
+      debugger;
       if (this["$refs"]) {
-        if (this.$refs.formLogin) {
-          this.$refs.formLogin[0].reset();
-          this.$refs.formLogin[0].resetValidation();
+        if (this.$refs.formLoginUser) {
+          if(this.$refs.formLoginUser[0]){
+            this.$refs.formLoginUser[0].reset();
+            this.$refs.formLoginUser[0].resetValidation();
+          }
         }
-        if (this.$refs.formRegister) {
-          this.$refs.formRegister[0].reset();
-          this.$refs.formRegister[0].resetValidation();
+
+        if (this.$refs.formLoginCompany) {
+          if(this.$refs.formLoginCompany[0]){
+            this.$refs.formLoginCompany[0].reset();
+            this.$refs.formLoginCompany[0].resetValidation();
+          }
         }
+
+        if (this.$refs.formRegisterUser) {
+          if(this.$refs.formRegisterUser[0]){
+            this.$refs.formRegisterUser[0].reset();
+            this.$refs.formRegisterUser[0].resetValidation();
+          }
+        }
+
+        if (this.$refs.formRegisterCompany) {
+          if(this.$refs.formRegisterCompany[0]){
+            this.$refs.formRegisterCompany[0].reset();
+            this.$refs.formRegisterCompany[0].resetValidation();
+          }
+        }
+
       }
     },
   },
