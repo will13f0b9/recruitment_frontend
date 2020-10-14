@@ -375,11 +375,16 @@
     </v-dialog>
     <v-dialog v-model="resetPasswordModal" persistent max-width="600">
       <v-card>
-        <v-card-title class="headline grey--text">Recuperar senha {{this.type == 'cnpj' ? 'da conta da sua empresa' : 'da sua conta de usuário'}}</v-card-title>
+        <v-card-title class="headline grey--text"
+          >Recuperar senha
+          {{
+            this.type == "cnpj"
+              ? "da conta da sua empresa"
+              : "da sua conta de usuário"
+          }}</v-card-title
+        >
         <v-card-text>
-          <v-form
-            ref="formResetPass"
-          >
+          <v-form ref="formResetPass">
             <v-text-field
               v-model="emailToReset"
               label="E-mail"
@@ -569,7 +574,8 @@ export default {
     ],
     descriptionRules: [
       (value) => !!value || "Descrição da empresa é um campo obrigatório",
-      (v) => !!v && v.length <= 50 || "Campo descrição no máximo 50 caracteres",
+      (v) =>
+        (!!v && v.length <= 50) || "Campo descrição no máximo 50 caracteres",
 
       //   (v) => v.length >= 8 || "Min de 8 caracteres",
       //   () => "The email and password you entered don't match",
@@ -589,36 +595,34 @@ export default {
       if (after) {
         this.mainControll.registerTab ? (this.tab = 1) : (this.tab = 0);
       }
-      debugger;
       if (this["$refs"]) {
         if (this.$refs.formLoginUser) {
-          if(this.$refs.formLoginUser[0]){
+          if (this.$refs.formLoginUser[0]) {
             this.$refs.formLoginUser[0].reset();
             this.$refs.formLoginUser[0].resetValidation();
           }
         }
 
         if (this.$refs.formLoginCompany) {
-          if(this.$refs.formLoginCompany[0]){
+          if (this.$refs.formLoginCompany[0]) {
             this.$refs.formLoginCompany[0].reset();
             this.$refs.formLoginCompany[0].resetValidation();
           }
         }
 
         if (this.$refs.formRegisterUser) {
-          if(this.$refs.formRegisterUser[0]){
+          if (this.$refs.formRegisterUser[0]) {
             this.$refs.formRegisterUser[0].reset();
             this.$refs.formRegisterUser[0].resetValidation();
           }
         }
 
         if (this.$refs.formRegisterCompany) {
-          if(this.$refs.formRegisterCompany[0]){
+          if (this.$refs.formRegisterCompany[0]) {
             this.$refs.formRegisterCompany[0].reset();
             this.$refs.formRegisterCompany[0].resetValidation();
           }
         }
-
       }
     },
   },
@@ -642,9 +646,14 @@ export default {
           .authenticate(data)
           .then((success) => {
             this.mainControll.globalLoading = false;
+
+            this.$session.start();
+            debugger;
             if (!success.data.hasOwnProperty("companyId")) {
               this.mainControll.userData = success.data.userInfo;
               this.mainControll.dashInfo = success.data.dashInfo;
+              this.$session.set("userData", success.data.userInfo);
+              this.$session.set("dashInfo", success.data.dashInfo);
               const path =
                 this.mainControll.userData.profiles.indexOf("CANDIDATE") != -1
                   ? "candidate"
@@ -652,6 +661,7 @@ export default {
               this.$router.push("/" + path);
             } else {
               this.mainControll.company = success.data;
+              this.$session.set("company", success.data);
               this.$router.push("company");
             }
 
@@ -744,7 +754,9 @@ export default {
             const user = new Users();
             const authData = { password: this.registerForm.password };
             if (this.registerForm.companyForm) {
-              authData["cnpj"] = RemoveSpecialCharacters(this.registerForm.cnpj);
+              authData["cnpj"] = RemoveSpecialCharacters(
+                this.registerForm.cnpj
+              );
             } else {
               authData["email"] = this.registerForm.email;
             }
@@ -752,9 +764,16 @@ export default {
               .authenticate(authData)
               .then((success) => {
                 this.mainControll.globalLoading = false;
+
+                this.$session.start();
+
                 if (!success.data.hasOwnProperty("companyId")) {
                   this.mainControll.userData = success.data.userInfo;
                   this.mainControll.dashInfo = success.data.dashInfo;
+
+                  this.$session.set("userData", success.data.userInfo);
+                  this.$session.set("dashInfo", success.data.dashInfo);
+
                   const path =
                     this.mainControll.userData.profiles.indexOf("CANDIDATE") !=
                     -1
@@ -763,6 +782,7 @@ export default {
                   this.$router.push("/" + path);
                 } else {
                   this.mainControll.company = success.data;
+                  this.$session.set("company", success.data);
                   this.$router.push("/company");
                 }
 
@@ -814,7 +834,7 @@ export default {
     },
     resetPassword() {
       const userS = new Users();
-      if(this.$refs.formResetPass.validate()){
+      if (this.$refs.formResetPass.validate()) {
         this.mainControll.globalLoading = true;
         userS
           .resetPassowrd(this.emailToReset, this.type == "cnpj")

@@ -3,9 +3,12 @@ import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify';
 import { VueMaskDirective } from 'v-mask'
+import VueSession from 'vue-session'
 
 Vue.directive('mask', VueMaskDirective);
 Vue.config.productionTip = false
+Vue.use(VueSession)
+
 
 new Vue({
   router,

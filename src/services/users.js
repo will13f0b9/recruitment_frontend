@@ -45,15 +45,19 @@ export class Users extends BaseApi {
         return axios.get(`${this.cUri}/?email=${email}&profiles=CANDIDATE`);
     }
 
-    async findAllRecruiterByCompanie(companieId){
+    async findAllRecruiterByCompanie(companieId) {
         return axios.get(`${this.cUri}/companies/${companieId}`)
     }
-    
-    async addNewCompanyToUser(companyId, userId){
-        return axios.post(`${this.cUri}/${userId}/companies/`, {companyId: companyId})
+
+    async addNewCompanyToUser(companyId, userId) {
+        return axios.post(`${this.cUri}/${userId}/companies/`, { companyId: companyId })
     }
 
-    async resetPassowrd(email, isCompany){
+    async resetPassowrd(email, isCompany) {
         return axios.post(`${this.cUri}/reset/password?email=${email}&isCompany=${isCompany}`)
+    }
+
+    async getDashInfo(userId) {
+        return axios.get(`${this.cUri}/dashInfo/${userId}`)
     }
 }

@@ -6,7 +6,8 @@
         mainControll &&
         !mainControll.company.hasOwnProperty('companyId') &&
         mainControll.userData &&
-        mainControll.userData.profiles && mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
+        mainControll.userData.profiles &&
+        mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
         (!mainControll.userData.curriculum ||
           mainControll.userData.curriculum.length > 0)
       "
@@ -52,15 +53,15 @@
       :company="mainControll.company"
       >></Menu
     >
-      <router-view
-        :userData="mainControll.userData"
-        :dashInfo="mainControll.dashInfo"
-        :company="mainControll.company"
-        :mainControll="mainControll"
-      ></router-view>
+    <router-view
+      :userData="mainControll.userData"
+      :dashInfo="mainControll.dashInfo"
+      :company="mainControll.company"
+      :mainControll="mainControll"
+    ></router-view>
   </v-app>
   <v-app v-else class="about">
-      <router-view :mainControll="mainControll"></router-view>
+    <router-view :mainControll="mainControll"></router-view>
   </v-app>
 </template>
 
@@ -68,6 +69,7 @@
 import Menu from "@/components/Menu.vue";
 import { routes } from "@/router/index.js";
 import { Users } from "@/services/users.js";
+import { Jobs } from "@/services/jobs.js";
 
 export default {
   name: "App",
@@ -154,46 +156,115 @@ export default {
       });
       console.log(route);
       const loggedArea = route && route.length > 0;
+      console.log(this.$router.currentRoute.name);
       console.log("LOGGED AREA", loggedArea);
       return loggedArea;
     },
-    canMoveToLandingPage() {
-      return (
-        !this.mainControll ||
-        ((!this.mainControll.company ||
-          !this.mainControll.company.hasOwnProperty("companyId")) &&
-          (!this.mainControll.userData ||
-            !this.mainControll.userData.hasOwnProperty("userId")))
-      );
+    persistDataOfSession() {
+      debugger;
+      console.log("PERSIST DATA IN SESSION")
+      if (this.$session.exists()) {
+        if (
+          !this.mainControll.userData ||
+          !this.mainControll.userData.hasOwnProperty("userId")
+        ) {
+          const data = this.$session.get("userData");
+          if (data) {
+            this.mainControll.userData = data;
+          }
+        }
+        if (
+          !this.mainControll.dashInfo ||
+          !this.mainControll.dashInfo.hasOwnProperty("jobs")
+        ) {
+          const data = this.$session.get("dashInfo");
+          if (data) {
+            this.mainControll.dashInfo = data;
+          }
+        }
+
+        if (
+          !this.mainControll.company ||
+          !this.mainControll.company.hasOwnProperty("companyId")
+        ) {
+          const data = this.$session.get("company");
+          if (data) {
+            this.mainControll.company = data;
+          }
+        }
+      }
+    },
+    getDashCandidate(userId) {
+      if (userId) {
+        const userService = new Users();
+        this.mainControll.globalLoading = true;
+        userService
+          .getDashInfo(userId)
+          .then((success) => {
+            this.mainControll.globalLoading = false;
+            if (success.status == 200) {
+              this.mainControll.dashInfo = success.data.dashInfo;
+            }
+          })
+          .catch((err) => {
+            this.mainControll.globalLoading = false;
+          });
+      }
+    },
+    getDashRecruiter(companyId) {
+      if (companyId) {
+        const jbservice = new Jobs();
+        this.mainControll.globalLoading = true;
+        jbservice
+          .getDashFromCompanyJobs(companyId)
+          .then((success) => {
+            this.mainControll.globalLoading = false;
+            if (success.status == 200) {
+              this.mainControll.dashInfo = success.data.dashInfo;
+            }
+          })
+          .catch((err) => {
+            this.mainControll.globalLoading = false;
+          });
+      }
     },
   },
-  async mounted() {
-    console.log("CREATED");
-    if (this.canMoveToLandingPage()) {
-      if (this.$router.currentRoute.path != "/") {
-        this.$router.push("/");
-        this.mainControll.showLoginDialog = true;
-        this.mainControll.registerTab = false;
+  mounted() {
+    if (!this.$session.exists()) {
+      if (this.loggedRouter()) {
         this.mainControll.dashInfo = Object.assign({}, {});
         this.mainControll.userData = Object.assign({}, {});
         this.mainControll.company = Object.assign({}, {});
+        this.$router.push("/");
       }
+    } else {
+      this.persistDataOfSession();
     }
   },
-  async updated() {
-    console.log("UPDATED");
-    if (this.canMoveToLandingPage()) {
-      if (this.$router.currentRoute.path != "/") {
-        this.$router.push("/");
-        this.mainControll.showLoginDialog = true;
-        this.mainControll.registerTab = false;
+  watch: {
+    $route(to, from) {
+      if (!this.$session.exists()) {
+        if (this.loggedRouter()) {
+          this.mainControll.dashInfo = Object.assign({}, {});
+          this.mainControll.userData = Object.assign({}, {});
+          this.mainControll.company = Object.assign({}, {});
+          console.log("push router");
+          this.$router.push("/");
+        }
+      } else {
+        debugger;
+        this.persistDataOfSession();
+        if (this.$router.currentRoute.path == "/candidate") {
+          if (this.mainControll.userData) {
+            this.getDashCandidate(this.mainControll.userData.userId);
+          }
+        } else if (this.$router.currentRoute.path == "/recruiter") {
+          if (this.mainControll.company) {
+            this.getDashRecruiter(this.mainControll.company.companyId);
+          }
+        }
       }
-    }
-    if (this.$router.currentRoute.path == "/") {
-      this.mainControll.dashInfo = Object.assign({}, {});
-      this.mainControll.userData = Object.assign({}, {});
-      this.mainControll.company = Object.assign({}, {});
-    }
+    },
   },
 };
 </script>
