@@ -648,7 +648,7 @@ export default {
             this.mainControll.globalLoading = false;
 
             this.$session.start();
-
+            debugger;
             if (!success.data.hasOwnProperty("companyId")) {
               this.mainControll.userData = success.data.userInfo;
               this.mainControll.dashInfo = success.data.dashInfo;

@@ -81,8 +81,30 @@
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ userData.name }}</h4>
-        <h5 style="color: grey;display: block;display: -webkit-box;max-width: 200px;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{ userData.description }}</h5>
+        <h4
+          style="
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          "
+        >
+          {{ userData.name }}
+        </h4>
+        <h5
+          style="
+            color: grey;
+            display: block;
+            display: -webkit-box;
+            max-width: 200px;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          "
+        >
+          {{ userData.description }}
+        </h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">
@@ -131,8 +153,31 @@
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500;font-weight: 500;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ company.name }}</h4>
-        <h5 style="color: grey;display: block;display: -webkit-box;max-width: 200px;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{ company.description }}</h5>
+        <h4
+          style="
+            font-weight: 500;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          "
+        >
+          {{ company.name }}
+        </h4>
+        <h5
+          style="
+            color: grey;
+            display: block;
+            display: -webkit-box;
+            max-width: 200px;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          "
+        >
+          {{ company.description }}
+        </h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in companyItems">
@@ -254,6 +299,12 @@ export default {
       var path = item._id == "home" ? item.path + profile : item.path;
       if (item._id == "out") {
         this.$session.destroy();
+        this.$session.remove("company");
+        this.$session.remove("userData");
+        this.$session.remove("dashInfo");
+        this.mainControll.dashInfo = Object.assign({}, {});
+        this.mainControll.userData = Object.assign({}, {});
+        this.mainControll.company = Object.assign({}, {});
       }
       if (this.$router.currentRoute && this.$router.currentRoute.path != path) {
         this.$router.push(path);

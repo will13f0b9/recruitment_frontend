@@ -59,7 +59,7 @@
                         }}</span>
                       </div>
                     </v-col>
-                    <v-col cols="12" sm="12" md="2">
+                    <v-col cols="12" sm="12" md="4">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
                         <v-list-item-subtitle class="font-weight-black"
                           >Concluido Exames</v-list-item-subtitle
@@ -67,14 +67,14 @@
                         <span class="">{{ job.candidateDoneExam }}</span>
                       </div>
                     </v-col>
-                    <v-col cols="12" sm="12" md="2">
+                    <!-- <v-col cols="12" sm="12" md="2">
                       <div class="mb-0 mt-2 font-weight-medium text-center">
                         <v-list-item-subtitle class="font-weight-black"
                           >Visualizações</v-list-item-subtitle
                         >
                         <span class="">{{ job.usersWhoViewed }}</span>
                       </div>
-                    </v-col>
+                    </v-col> -->
                   </v-row>
                   <v-card-actions class="mt-5 mb-0 pb-0">
                     <v-btn
