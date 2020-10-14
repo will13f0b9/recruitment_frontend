@@ -306,6 +306,7 @@
             >Fechar</v-btn
           >
           <v-btn
+            style="color: white;"
             color="teal darken-1"
             small
             :disabled="dataOfDone"

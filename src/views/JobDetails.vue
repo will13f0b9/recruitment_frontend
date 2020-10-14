@@ -227,7 +227,8 @@
             </v-col>
           </v-row>
         </article>
-        <div style="padding: 8px">
+
+        <div class="box-btns">
           <v-btn
             x-large
             block
@@ -627,7 +628,7 @@
             <v-row
               v-for="exam in  examDetails.filter(d => d.quantity)"
               :key="exam._id"
-              style="box-shadow: 5px 4px 7px 1px #0000001a"
+              style="box-shadow: 5px 4px 7px 1px #0000001a; margin-top: 16px;"
               :style="`border-left: 10px solid #${(
                 (Math.random() * 0xffffff) <<
                 0
@@ -1013,5 +1014,14 @@ export default {
 .neutral {
   color: #000000;
   background-color: #9c99994a;
+}
+
+.box-btns {
+  padding: 8px 12px;
+
+}
+
+.box-btns button + button {
+  margin: 8px 0;
 }
 </style>
