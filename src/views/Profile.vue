@@ -434,6 +434,7 @@ export default {
             this.userData.curriculum =
               success.data.curriculum || canSetCurriculum ? true : false;
             this.user = Object.assign({}, this.userData);
+            this.$session.set("userData", this.userData);
             this.mainControll.globalLoading = false;
           })
           .catch((err) => {
@@ -459,6 +460,7 @@ export default {
             this.company.plan = success.data.plan;
             this.company.description = success.data.description;
             this.companyData = Object.assign({}, this.company);
+            this.$session.set("company", this.company);
             this.mainControll.globalLoading = false;
           })
           .catch((err) => {

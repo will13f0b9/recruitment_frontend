@@ -6,7 +6,8 @@
         mainControll &&
         !mainControll.company.hasOwnProperty('companyId') &&
         mainControll.userData &&
-        mainControll.userData.profiles && mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
+        mainControll.userData.profiles &&
+        mainControll.userData.profiles.indexOf('CANDIDATE') != -1 &&
         (!mainControll.userData.curriculum ||
           mainControll.userData.curriculum.length > 0)
       "
@@ -52,15 +53,15 @@
       :company="mainControll.company"
       >></Menu
     >
-      <router-view
-        :userData="mainControll.userData"
-        :dashInfo="mainControll.dashInfo"
-        :company="mainControll.company"
-        :mainControll="mainControll"
-      ></router-view>
+    <router-view
+      :userData="mainControll.userData"
+      :dashInfo="mainControll.dashInfo"
+      :company="mainControll.company"
+      :mainControll="mainControll"
+    ></router-view>
   </v-app>
   <v-app v-else class="about">
-      <router-view :mainControll="mainControll"></router-view>
+    <router-view :mainControll="mainControll"></router-view>
   </v-app>
 </template>
 
@@ -157,42 +158,61 @@ export default {
       console.log("LOGGED AREA", loggedArea);
       return loggedArea;
     },
-    canMoveToLandingPage() {
-      return (
-        !this.mainControll ||
-        ((!this.mainControll.company ||
-          !this.mainControll.company.hasOwnProperty("companyId")) &&
-          (!this.mainControll.userData ||
-            !this.mainControll.userData.hasOwnProperty("userId")))
-      );
+    persistDataOfSession() {
+      if (this.$session.exists()) {
+        if (
+          !this.mainControll.userData ||
+          !this.mainControll.userData.hasOwnProperty("userId")
+        ) {
+          const data = this.$session.get("userData");
+          if (data) {
+            this.mainControll.userData = data;
+          }
+        }
+        if (
+          !this.mainControll.dashInfo ||
+          !this.mainControll.dashInfo.hasOwnProperty("jobs")
+        ) {
+          const data = this.$session.get("dashInfo");
+          if (data) {
+            this.mainControll.dashInfo = data;
+          }
+        }
+
+        if (
+          !this.mainControll.company ||
+          !this.mainControll.company.hasOwnProperty("companyId")
+        ) {
+          const data = this.$session.get("company");
+          if (data) {
+            this.mainControll.company = data;
+          }
+        }
+      }
     },
   },
-  async mounted() {
-    console.log("CREATED");
-    if (this.canMoveToLandingPage()) {
-      if (this.$router.currentRoute.path != "/") {
-        this.$router.push("/");
-        this.mainControll.showLoginDialog = true;
-        this.mainControll.registerTab = false;
-        this.mainControll.dashInfo = Object.assign({}, {});
-        this.mainControll.userData = Object.assign({}, {});
-        this.mainControll.company = Object.assign({}, {});
-      }
+  mounted() {
+    if (!this.$session.exists() && this.loggedRouter()) {
+      this.mainControll.dashInfo = Object.assign({}, {});
+      this.mainControll.userData = Object.assign({}, {});
+      this.mainControll.company = Object.assign({}, {});
+      this.$router.push("/");
+    } else {
+      this.persistDataOfSession();
     }
   },
   async updated() {
     console.log("UPDATED");
-    if (this.canMoveToLandingPage()) {
-      if (this.$router.currentRoute.path != "/") {
-        this.$router.push("/");
-        this.mainControll.showLoginDialog = true;
-        this.mainControll.registerTab = false;
-      }
-    }
-    if (this.$router.currentRoute.path == "/") {
+    console.log(this.$session);
+    console.log(this.$session.get("userData"));
+    console.log("sessions");
+    if (!this.$session.exists() && this.loggedRouter()) {
       this.mainControll.dashInfo = Object.assign({}, {});
       this.mainControll.userData = Object.assign({}, {});
       this.mainControll.company = Object.assign({}, {});
+      this.$router.push("/");
+    } else {
+      this.persistDataOfSession();
     }
   },
 };

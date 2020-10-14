@@ -11,7 +11,13 @@
           <span
             style="cursor: pointer"
             class="title ml-1 mr-5"
-            @click="!userData.hasOwnProperty('companyId') ? userData.profiles.indexOf('CANDIDATE') != -1 ? $router.push('/candidate') : $router.push('/recruiter') : $router.push('/company')"
+            @click="
+              !userData.hasOwnProperty('companyId')
+                ? userData.profiles.indexOf('CANDIDATE') != -1
+                  ? $router.push('/candidate')
+                  : $router.push('/recruiter')
+                : $router.push('/company')
+            "
           >
             <v-avatar>
               <img
@@ -75,7 +81,8 @@
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500">{{ userData.name }}</h4>
+        <h4 style="font-weight: 500;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ userData.name }}</h4>
+        <h5 style="color: grey;display: block;display: -webkit-box;max-width: 200px;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{ userData.description }}</h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in items">
@@ -104,10 +111,9 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title
-                class="grey--text"
-                >{{ item.text }}</v-list-item-title
-              >
+              <v-list-item-title class="grey--text">{{
+                item.text
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -125,8 +131,8 @@
         <v-avatar height="70" width="70">
           <img class="avatar" :src="getImgAvatar()" alt="John" />
         </v-avatar>
-        <h4 style="font-weight: 500">{{ company.name }}</h4>
-        <h5 style="color: grey">{{ company.description }}</h5>
+        <h4 style="font-weight: 500;font-weight: 500;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ company.name }}</h4>
+        <h5 style="color: grey;display: block;display: -webkit-box;max-width: 200px;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{ company.description }}</h5>
       </div>
       <v-list dense class="grey lighten-4">
         <template v-for="(item, i) in companyItems">
@@ -153,11 +159,10 @@
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
-            <v-list-item-content  @click="moveToRoute(item, profile)">
-              <v-list-item-title
-                class="grey--text"
-                >{{ item.text }}</v-list-item-title
-              >
+            <v-list-item-content @click="moveToRoute(item, profile)">
+              <v-list-item-title class="grey--text">{{
+                item.text
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -247,6 +252,9 @@ export default {
     },
     moveToRoute(item, profile) {
       var path = item._id == "home" ? item.path + profile : item.path;
+      if (item._id == "out") {
+        this.$session.destroy();
+      }
       if (this.$router.currentRoute && this.$router.currentRoute.path != path) {
         this.$router.push(path);
       }
@@ -261,7 +269,7 @@ export default {
           this.mainControll.dashInfo = success.data.dashInfo;
           this.mainControll.company["companyId"] = company._id;
           this.mainControll.company["name"] = company.name;
-          this.$router.push("/recruiter")
+          this.$router.push("/recruiter");
         })
         .catch((err) => {
           this.mainControll.globalLoading = false;

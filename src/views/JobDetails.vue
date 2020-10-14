@@ -310,7 +310,7 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="dialogCandidates" persistent max-width="800">
+      <v-dialog v-model="dialogCandidates" max-width="800">
         <v-card>
           <v-card-title class="headline indigo--text"
             >Candidatos a vaga</v-card-title
@@ -502,7 +502,7 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="dialogAproveCandidate" persistent max-width="400">
+      <v-dialog v-model="dialogAproveCandidate" max-width="400">
         <v-card>
           <v-card-title class="headline red--text">Atenção</v-card-title>
           <v-card-text>
