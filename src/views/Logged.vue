@@ -155,6 +155,7 @@ export default {
       });
       console.log(route);
       const loggedArea = route && route.length > 0;
+      console.log(this.$router.currentRoute.name);
       console.log("LOGGED AREA", loggedArea);
       return loggedArea;
     },
@@ -201,20 +202,19 @@ export default {
       this.persistDataOfSession();
     }
   },
-  async updated() {
-    console.log("UPDATED");
-    console.log(this.$session);
-    console.log(this.$session.get("userData"));
-    console.log("sessions");
-    if (!this.$session.exists() && this.loggedRouter()) {
-      this.mainControll.dashInfo = Object.assign({}, {});
-      this.mainControll.userData = Object.assign({}, {});
-      this.mainControll.company = Object.assign({}, {});
-      this.$router.push("/");
-    } else {
-      this.persistDataOfSession();
-    }
-  },
+  watch: {
+    $route(to, from) {
+      if (!this.$session.exists() && this.loggedRouter()) {
+        this.mainControll.dashInfo = Object.assign({}, {});
+        this.mainControll.userData = Object.assign({}, {});
+        this.mainControll.company = Object.assign({}, {});
+        console.log("push router");
+        this.$router.push("/");
+      } else {
+        this.persistDataOfSession();
+      }
+    },
+  }
 };
 </script>
 <style>
